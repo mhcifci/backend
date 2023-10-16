@@ -36,6 +36,19 @@ class CompaniesService extends BaseService {
       company_phone: data.company_phone,
     });
   }
+
+  async getCompanyByUser(user_id) {
+    // Kullanıcının varlığını kontrol et.
+    const checkUser = await UserService.getById(user_id);
+    if (!checkUser) {
+      throw new Error("Kullanıcı bulunamadı.");
+    }
+
+    // Kullanıcının firması var mı kontrol et?
+    return await this.getWithCondition({
+      user_id: user_id,
+    });
+  }
 }
 
 module.exports = new CompaniesService();

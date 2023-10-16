@@ -14,7 +14,8 @@ exports.getAllUsers = async (req, res) => {
 exports.getUserById = async (req, res) => {
   try {
     const user = await User.getById(parseInt(req.params.id));
-    return response.success(res, user);
+    const company = await companiesService.getCompanyByUser(parseInt(req.params.id));
+    return response.success(res, { user: user, company: company });
   } catch (err) {
     return response.badRequest(res, err.message);
   }
