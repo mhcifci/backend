@@ -1,0 +1,41 @@
+const { Op } = require("sequelize");
+const Companies = require("../models/companies.model");
+const BaseService = require("./base.service");
+const UserService = require("./user.service");
+
+class CompaniesService extends BaseService {
+  constructor() {
+    super(Companies);
+  }
+
+  async createCompany(data) {
+    // Kullanıcının varlığını kontrol et.
+    const checkUser = await UserService.getById(data.user_id);
+    if (!checkUser) {
+      throw new Error("Kullanıcı bulunamadı.");
+    }
+
+    // Kullanıcının firması var mı kontrol et?
+    const checkCompany = await this.getWithCondition({
+      user_id: data.user_id,
+    });
+    if (checkCompany) {
+      throw new Error("Kullanıcının zaten firma profili bulunuyor.");
+    }
+
+    if (!data.company_name) {
+      throw new Error("Firma ismini giriniz.");
+    }
+    if (!data.company_phone) {
+      throw new Error("Firma telefon numarası giriniz.");
+    }
+    // Tüm şartlar sağlanırsa firmayı oluştur.
+    return await this.create({
+      user_id: data.user_id,
+      title: data.company_name,
+      company_phone: data.company_phone,
+    });
+  }
+}
+
+module.exports = new CompaniesService();
