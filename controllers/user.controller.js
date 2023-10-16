@@ -1,31 +1,41 @@
-// const User = require("../models/user.model");
 const response = require("../interceptors/response.interceptor");
+const User = require("../services/user.service");
 
-const users = [
-  {
-    name: "John",
-    surname: "Doe",
-    email: "john@example.com",
-  },
-];
-
-exports.getAllUsers = (req, res) => {
-  // Tüm kullanıcıları al ve döndür
-  return response.success(res, users, "Tüm kullanıcılar başarıyla alındı.");
+exports.getAllUsers = async (req, res) => {
+  try {
+    const users = await User.getAll();
+    return response.success(res, users);
+  } catch (err) {
+    return response.badRequest(res, err.message);
+  }
 };
 
-exports.getUserById = (req, res) => {
-  // Belirli bir kullanıcıyı ID'ye göre al ve döndür
+exports.getUserById = async (req, res) => {
+  try {
+    const user = await User.getById(parseInt(req.params.id));
+    return response.success(res, user);
+  } catch (err) {
+    return response.badRequest(res, err.message);
+  }
 };
 
-exports.createUser = (req, res) => {
-  // Yeni bir kullanıcı oluştur ve döndür
+exports.createUser = async (req, res) => {
+  try {
+    const user = await User.createUser(req.body);
+    return response.success(res, user);
+  } catch (err) {
+    return response.badRequest(res, err.message);
+  }
 };
 
-exports.updateUser = (req, res) => {
-  // Belirli bir kullanıcıyı güncelle ve döndür
-};
+// TODO : Kontrol Edilecek.
+// exports.updateUser = async (req, res) => {
+//   try {
+//     const user = await User.updateUser(req.params.id, req.body);
+//     return response.success(res, user);
+//   } catch (err) {
+//     return response.badRequest(res, err.message);
+//   }
+// };
 
-exports.deleteUser = (req, res) => {
-  // Belirli bir kullanıcıyı sil
-};
+exports.deleteUser = async (req, res) => {};
