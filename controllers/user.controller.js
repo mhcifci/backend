@@ -29,13 +29,20 @@ exports.createUser = async (req, res) => {
 };
 
 // TODO : Kontrol Edilecek.
-// exports.updateUser = async (req, res) => {
-//   try {
-//     const user = await User.updateUser(req.params.id, req.body);
-//     return response.success(res, user);
-//   } catch (err) {
-//     return response.badRequest(res, err.message);
-//   }
-// };
+exports.updateUser = async (req, res) => {
+  try {
+    const user = await User.updateUser(req.params.id, req.body);
+    return response.success(res, user);
+  } catch (err) {
+    return response.badRequest(res, err.message);
+  }
+};
 
-exports.deleteUser = async (req, res) => {};
+exports.deleteUser = async (req, res) => {
+  try {
+    await User.delete(req.params.id);
+    return response.success(res, null, null);
+  } catch (err) {
+    return response.badRequest(res, err.message);
+  }
+};
