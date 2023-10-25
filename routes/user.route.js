@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const users = require("../controllers/user.controller");
+const users = require("../controllers/admin/user.controller");
 const response = require("../interceptors/response.interceptor");
 const { body, validationResult } = require("express-validator");
 

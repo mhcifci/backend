@@ -1,10 +1,11 @@
-const response = require("../interceptors/response.interceptor");
-const companiesService = require("../services/companies.service");
-const User = require("../services/user.service");
+const response = require("../../interceptors/response.interceptor");
+const companiesService = require("../../services/companies.service");
+const User = require("../../services/user.service");
+const userTransactionsService = require("../../services/userTransactions.service");
 
 exports.getAllUsers = async (req, res) => {
   try {
-    const users = await User.getAll();
+    const users = await User.getAllWithPagination();
     return response.success(res, users);
   } catch (err) {
     return response.badRequest(res, err.message);
@@ -14,8 +15,19 @@ exports.getAllUsers = async (req, res) => {
 exports.getUserById = async (req, res) => {
   try {
     const user = await User.getById(parseInt(req.params.id));
-    const company = await companiesService.getCompanyByUser(parseInt(req.params.id));
-    return response.success(res, { user: user, company: company });
+    let responseData = { user };
+
+    // Have params for show company
+    if (req.query.show_company === "true") {
+      const company = await companiesService.getCompanyByUser(parseInt(req.params.id));
+      responseData.company = company;
+    }
+    // Have params for balance
+    if (req.query.show_balance === "true") {
+      const balance = await userTransactionsService.getUserBalance(parseInt(req.params.id));
+      responseData.balance = balance;
+    }
+    return response.success(res, responseData);
   } catch (err) {
     return response.badRequest(res, err.message);
   }
