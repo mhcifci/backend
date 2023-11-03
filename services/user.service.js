@@ -1,4 +1,6 @@
 const { Op } = require("sequelize");
+const bcrypt = require("bcrypt");
+
 const User = require("../models/user.model");
 const BaseService = require("./base.service");
 
@@ -20,12 +22,14 @@ class UserService extends BaseService {
       }
     }
 
+    const hashedPassword = await bcrypt.hash(data.password, 10);
+
     const user = {
       name: data.name,
       surname: data.surname,
       phone: data.phone,
       country_code: data.country_code,
-      password: data.password,
+      password: hashedPassword,
       email: data.email,
     };
     return await this.create(user);

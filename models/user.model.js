@@ -31,6 +31,7 @@ const User = sequelize.define(
     is_active: {
       type: Sequelize.TINYINT,
       allowNull: false,
+      defaultValue: true,
     },
   },
   { timestamps: true, underscored: true, tableName: "users" }

@@ -9,6 +9,7 @@ const APP_PORT = process.env.APP_PORT || 3001;
 
 // Routes
 app.use("/users", require("./routes/user.route"));
+app.use("/auth", require("./routes/auth.route"));
 
 // For Invalid Routes
 app.use((req, res, next) => {

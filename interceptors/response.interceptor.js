@@ -7,7 +7,7 @@ function success(res, data, message = "Success", status = 200) {
   });
 }
 
-function created(res, data, message = "Resource created", status = 201) {
+function created(res, data, message = "Created", status = 201) {
   res.status(status).json({
     status,
     success: true,
@@ -24,7 +24,7 @@ function badRequest(res, message = "Bad request", status = 400) {
   });
 }
 
-function unauthorized(res, message = "Unauthorized", status = 401) {
+function unauthorized(res, message = "Unauthorized Request", status = 401) {
   res.status(status).json({
     status,
     success: false,
