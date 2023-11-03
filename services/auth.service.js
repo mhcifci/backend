@@ -32,7 +32,7 @@ class AuthService extends BaseService {
 
     const token = jwt.sign(
       {
-        userId: existingUser.id,
+        id: existingUser.id,
         email: existingUser.email,
       },
       process.env.JWT_SECRET,

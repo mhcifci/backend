@@ -9,7 +9,7 @@ const validate = (req, res, next) => {
   if (errors.isEmpty()) {
     return next();
   }
-  return response.badRequest(res, "Gerekli alanlar doğrulanamadı.");
+  return response.badRequest(res, "Required fields could not be verified.");
 };
 const userValidationRules = [
   body("name").notEmpty().withMessage("Name is required"),

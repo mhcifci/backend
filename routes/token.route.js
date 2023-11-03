@@ -1,8 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const auth = require("../controllers/auth.controller");
-const response = require("../interceptors/response.interceptor");
+const token = require("../controllers/token.controller");
+const authMiddleware = require("../middlewares/auth.middleware");
 const { body, validationResult } = require("express-validator");
+
+const tokenRules = [body("token").notEmpty()];
 
 const validate = (req, res, next) => {
   const errors = validationResult(req);
@@ -11,7 +13,7 @@ const validate = (req, res, next) => {
   }
   return response.badRequest(res, "Required fields could not be verified.");
 };
-const loginValidationRules = [body("email").isEmail().withMessage("Invalid email format"), body("password").notEmpty().withMessage("Password is required")];
-router.post("/login", loginValidationRules, validate, auth.loginUser);
+
+router.post("/check", authMiddleware, tokenRules, validate, token.checkToken);
 
 module.exports = router;
