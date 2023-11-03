@@ -6,7 +6,6 @@ exports.checkToken = async (req, res) => {
     const user = req.user;
     const token = req.body.token;
     const result = await userFcmTokens.updateToken(user.id, token);
-    console.log(result);
     return response.success(res, result);
   } catch (err) {
     console.log(err);
