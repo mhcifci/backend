@@ -11,6 +11,7 @@ const APP_PORT = process.env.APP_PORT || 3001;
 app.use("/users", require("./routes/user.route"));
 app.use("/auth", require("./routes/auth.route"));
 app.use("/token", require("./routes/token.route"));
+app.use("/listing", require("./routes/listing.route"));
 
 // For Invalid Routes
 app.use((req, res, next) => {

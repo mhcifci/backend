@@ -14,7 +14,7 @@ class BaseService {
 
   async getById(id) {
     try {
-      const record = await this.model.findByPk(id);
+      const record = await this.model.findByPk(parseInt(id));
       return record;
     } catch (error) {
       throw error;
@@ -58,10 +58,10 @@ class BaseService {
 
   async getAllWithPagination(page = 1, limit = 10, condition = {}) {
     try {
-      const offset = (page - 1) * limit;
+      const offset = (parseInt(page) - 1) * parseInt(limit);
       const totalCount = await this.model.count();
       const records = await this.model.findAll({
-        limit: limit,
+        limit: parseInt(limit),
         offset: offset,
         where: condition,
         order: [["created_at", "DESC"]],
@@ -69,10 +69,10 @@ class BaseService {
 
       return {
         data: records,
-        currentPage: page,
-        currentLimit: limit,
+        currentPage: parseInt(page),
+        currentLimit: parseInt(limit),
         total: totalCount,
-        totalPages: Math.ceil(totalCount / limit),
+        totalPages: Math.ceil(totalCount / parseInt(limit)),
       };
     } catch (error) {
       throw error;

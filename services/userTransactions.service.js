@@ -11,22 +11,29 @@ class UserTransactionsService extends BaseService {
   async getUserBalance(user_id) {
     const userBalance = await UserTransactions.findOne({
       attributes: [[sequelize.fn("SUM", sequelize.col("amount")), "total_balance"]],
-      where: { user_id: user_id },
+      where: { user_id: parseInt(user_id) },
     });
 
-    return userBalance.getDataValue("total_balance") ? userBalance.getDataValue("total_balance") : 0;
+    return userBalance.getDataValue("total_balance") ? parseInt(userBalance.getDataValue("total_balance")) : 0;
   }
 
-  async addUserBalance(user_id, amount) {
-    // First create transaction
-    await UserTransactions.create({
+  async updateUserBalance(user_id, amount, reason = null) {
+    if (!user_id) {
+      throw new Error("User not found.");
+    }
+
+    if (amount === undefined || amount === null || amount === 0) {
+      throw new Error("Amount is required.");
+    }
+
+    const data = await UserTransactions.create({
       user_id: user_id,
       amount: amount,
-      created_at: new Date(),
-      updated_at: new Date(),
+      reason,
     });
-    await this.calculateUserBalance(user_id);
-    return await this.getUserBalance(user_id);
+    const balance = await this.getUserBalance(user_id);
+
+    return { data: data.dataValues, balance: balance };
   }
 }
 
