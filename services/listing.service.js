@@ -27,6 +27,14 @@ class ListingsService extends BaseService {
       throw new Error("Listing not found.");
     }
 
+    // İlan silinmiş veya aktif değilse hata döndürülür.
+    if (!checkListing.is_active) {
+      throw new Error("Listing not found.");
+    }
+    if (checkListing.is_deleted) {
+      throw new Error("Listing not found.");
+    }
+
     // İlan kullanıcı tarafından ödenip açılmış mı buna bakılır
     const checkOpened = await userOpenedListingsService.getWithCondition({
       user_id: checkUser.id,
