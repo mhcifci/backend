@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: mysql
--- Generation Time: Nov 03, 2023 at 08:10 PM
+-- Generation Time: Nov 08, 2023 at 06:50 PM
 -- Server version: 8.0.31
 -- PHP Version: 8.0.19
 
@@ -34,6 +34,49 @@ CREATE TABLE `companies` (
   `company_phone` varchar(255) NOT NULL,
   `created_at` timestamp NOT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `listings`
+--
+
+CREATE TABLE `listings` (
+  `id` int NOT NULL,
+  `user_id` int NOT NULL,
+  `category_id` int NOT NULL,
+  `description` text NOT NULL,
+  `country` varchar(55) NOT NULL COMMENT 'Bakılacak',
+  `is_active` tinyint NOT NULL,
+  `max_apply` int NOT NULL,
+  `show_fee` int NOT NULL,
+  `is_deleted` tinyint NOT NULL DEFAULT '0',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `listings`
+--
+
+INSERT INTO `listings` (`id`, `user_id`, `category_id`, `description`, `country`, `is_active`, `max_apply`, `show_fee`, `is_deleted`, `created_at`, `updated_at`) VALUES
+(3, 15, 1, 'Lorem ipsum set amet dolor', 'RM 177', 1, 3, 8, 0, '2023-11-08 17:14:00', '2023-11-08 17:14:00'),
+(4, 15, 1, 'Lorem ipsum set amet dolor', 'RM 177', 0, 0, 0, 0, '2023-11-08 18:01:24', '2023-11-08 18:01:24'),
+(5, 15, 1, 'Lorem ipsum set amet dolor', 'RM 177', 0, 0, 0, 0, '2023-11-08 18:03:03', '2023-11-08 18:03:03');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `listings_include_files`
+--
+
+CREATE TABLE `listings_include_files` (
+  `id` int NOT NULL,
+  `listing_id` int NOT NULL,
+  `url` varchar(255) NOT NULL,
+  `created_at` timestamp NOT NULL,
+  `updated_at` timestamp NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -98,6 +141,21 @@ INSERT INTO `user_fcm_tokens` (`id`, `token`, `user_id`, `created_at`, `updated_
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `user_opened_listings`
+--
+
+CREATE TABLE `user_opened_listings` (
+  `id` int NOT NULL,
+  `user_id` int NOT NULL,
+  `transaction_id` int NOT NULL,
+  `listing_id` int NOT NULL,
+  `created_at` timestamp NOT NULL,
+  `updated_at` timestamp NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `user_transactions`
 --
 
@@ -105,9 +163,17 @@ CREATE TABLE `user_transactions` (
   `id` int NOT NULL,
   `user_id` int NOT NULL,
   `amount` int NOT NULL,
+  `reason` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
   `created_at` timestamp NOT NULL,
   `updated_at` timestamp NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `user_transactions`
+--
+
+INSERT INTO `user_transactions` (`id`, `user_id`, `amount`, `reason`, `created_at`, `updated_at`) VALUES
+(1, 15, 1999, 'Test deposit.', '2023-11-08 17:19:00', '2023-11-08 17:19:00');
 
 --
 -- Indexes for dumped tables
@@ -117,6 +183,18 @@ CREATE TABLE `user_transactions` (
 -- Indexes for table `companies`
 --
 ALTER TABLE `companies`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `listings`
+--
+ALTER TABLE `listings`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `listings_include_files`
+--
+ALTER TABLE `listings_include_files`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -138,6 +216,12 @@ ALTER TABLE `user_fcm_tokens`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `user_opened_listings`
+--
+ALTER TABLE `user_opened_listings`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `user_transactions`
 --
 ALTER TABLE `user_transactions`
@@ -152,6 +236,18 @@ ALTER TABLE `user_transactions`
 --
 ALTER TABLE `companies`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT for table `listings`
+--
+ALTER TABLE `listings`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT for table `listings_include_files`
+--
+ALTER TABLE `listings_include_files`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `users`
@@ -172,10 +268,16 @@ ALTER TABLE `user_fcm_tokens`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
+-- AUTO_INCREMENT for table `user_opened_listings`
+--
+ALTER TABLE `user_opened_listings`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+
+--
 -- AUTO_INCREMENT for table `user_transactions`
 --
 ALTER TABLE `user_transactions`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

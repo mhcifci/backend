@@ -27,10 +27,6 @@ exports.create = async (req, res) => {
   try {
     // Auth middleware'dan gelen user kontrol edilir.
     const user = req.user;
-    /**
-     * ! Kredi ve başvuru sayısı için yanıt bekleniyor.
-     *
-     */
     const result = await Listing.createListing(user.id, {
       category_id: req.body.category_id,
       description: req.body.description,

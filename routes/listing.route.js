@@ -15,9 +15,9 @@ const validate = (req, res, next) => {
 const rules = [body("category_id").isInt(), body("description").isLength({ min: 10, max: 1000 }), body("country").isLength({ min: 3, max: 55 })];
 
 router.get("/list", listing.getAll);
-router.get("/detail/:id", authMiddleware, listing.get);
 router.post("/new", authMiddleware, rules, validate, listing.create);
 //
 router.get("/show-information/:id", authMiddleware, listing.showInformation);
+router.get("/detail/:id", authMiddleware, listing.get);
 
 module.exports = router;
