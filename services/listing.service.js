@@ -5,6 +5,7 @@ const userService = require("./user.service");
 const userTransactionsService = require("./userTransactions.service");
 const userOpenedListingsService = require("./userOpenedListings.service");
 const listingIncludeFilesService = require("./listingIncludeFiles.service");
+const bunnyHelper = require("./../utils/bunny.helper");
 
 class ListingsService extends BaseService {
   constructor() {
