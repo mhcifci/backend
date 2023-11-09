@@ -22,7 +22,7 @@ class UserTransactionsService extends BaseService {
       throw new Error("User not found.");
     }
 
-    if (amount === undefined || amount === null || amount === 0) {
+    if (amount === undefined || amount === null) {
       throw new Error("Amount is required.");
     }
 

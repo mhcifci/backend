@@ -5,13 +5,12 @@ const ListingIncludeFiles = sequelize.define(
   "listings_include_files",
   {
     listing_id: {
-      type: Sequelize.STRING,
+      type: Sequelize.INTEGER,
       allowNull: false,
     },
-    url: {
-      type: Sequelize.STRING,
+    file_id: {
+      type: Sequelize.INTEGER,
       allowNull: false,
-      max: 255,
     },
   },
   { timestamps: true, underscored: true, tableName: "listings_include_files" }

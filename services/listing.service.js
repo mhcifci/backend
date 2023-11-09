@@ -53,6 +53,12 @@ class ListingsService extends BaseService {
       return {
         listing: {
           data: checkListing,
+        },
+        // TODO: Burası yapılacak
+        remaining_apply: {
+          count: 0,
+        },
+        additional_files: {
           files: listingIncludeFiles,
           file_count: listingIncludeFiles.length,
         },
@@ -69,6 +75,11 @@ class ListingsService extends BaseService {
     return {
       listing: {
         data: checkListing,
+      },
+      remaining_apply: {
+        count: 0,
+      },
+      additional_files: {
         files: [],
         file_count: listingIncludeFiles.length,
       },

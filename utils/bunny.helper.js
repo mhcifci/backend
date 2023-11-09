@@ -45,10 +45,9 @@ class bunnyHelper {
     }
   }
 
-  async uploadFile(filePath, destinationPath) {
+  async uploadFile(fileBuffer, fileNameandPath) {
     try {
-      const fileContent = fs.readFileSync(filePath);
-      const response = await this.axiosInstance.put(destinationPath, fileContent, {
+      const response = await this.axiosInstance.put(fileNameandPath, fileBuffer, {
         headers: {
           "Content-Type": "application/octet-stream",
         },
