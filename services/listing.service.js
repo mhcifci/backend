@@ -28,6 +28,30 @@ class ListingsService extends BaseService {
       throw new Error("Listing not found.");
     }
 
+    // Kullanıcının kendi ilanı ise bilgileri döndür.
+    if (checkListing.user_id === checkUser.id) {
+      return {
+        listing: {
+          data: checkListing,
+        },
+        remaining_apply: {
+          max_apply: checkListing.max_apply,
+          opened: 0,
+          remaining: checkListing.max_apply,
+        },
+        additional_files: {
+          files: [],
+          file_count: 0,
+        },
+        user: {
+          name: checkUser.name,
+          phone: checkUser.country_code + checkUser.phone,
+          email: checkUser.email,
+        },
+        opened: true,
+      };
+    }
+
     // İlan silinmiş veya aktif değilse hata döndürülür.
     if (!checkListing.is_active) {
       throw new Error("Listing not found.");
@@ -174,6 +198,11 @@ class ListingsService extends BaseService {
       listing_id: parseInt(listing_id),
     });
     if (checkOpened) {
+      return await this.getListingDetail(checkUser.id, checkListing.id);
+    }
+
+    // Kullanıcının eğer kendi ilanı ise bilgileri döndür.
+    if (checkListing.user_id === checkUser.id) {
       return await this.getListingDetail(checkUser.id, checkListing.id);
     }
 
