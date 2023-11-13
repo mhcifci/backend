@@ -48,16 +48,35 @@ class ListingsService extends BaseService {
       listing_id: checkListing.id,
     });
 
+    const remainingApply = await this.getRemainingApply(checkUser.id, checkListing.id);
+
+    // Kullanıcının kendi ilanı ise tüm bilgileri döndürür.
+    if (checkListing.user_id === checkUser.id) {
+      return {
+        listing: {
+          data: checkListing,
+        },
+        remaining_apply: remainingApply,
+        additional_files: {
+          files: listingIncludeFiles,
+          file_count: listingIncludeFiles.length,
+        },
+        user: {
+          name: listingOwnershipDetail.name,
+          phone: listingOwnershipDetail.country_code + listingOwnershipDetail.phone,
+          email: listingOwnershipDetail.email,
+        },
+        opened: true,
+      };
+    }
+
     // Eğer ilan açılmışsa
     if (checkOpened) {
       return {
         listing: {
           data: checkListing,
         },
-        // TODO: Burası yapılacak
-        remaining_apply: {
-          count: 0,
-        },
+        remaining_apply: remainingApply,
         additional_files: {
           files: listingIncludeFiles,
           file_count: listingIncludeFiles.length,
@@ -76,9 +95,7 @@ class ListingsService extends BaseService {
       listing: {
         data: checkListing,
       },
-      remaining_apply: {
-        count: 0,
-      },
+      remaining_apply: remainingApply,
       additional_files: {
         files: [],
         file_count: listingIncludeFiles.length,
@@ -160,6 +177,12 @@ class ListingsService extends BaseService {
       return await this.getListingDetail(checkUser.id, checkListing.id);
     }
 
+    // İlanın remaining_apply değeri 0'dan küçükse hata döndürülür.
+    const remainingApply = await this.getRemainingApply(checkUser.id, checkListing.id);
+    if (remainingApply.remaining <= 0) {
+      throw new Error("Listing has reached the maximum number of apply.");
+    }
+
     // Kullanıcı'nın hesabında yeteri kadar ücret var mı?
     const userBalance = await userTransactionsService.getUserBalance(parseInt(user));
     if (userBalance < checkListing.show_fee) {
@@ -186,6 +209,65 @@ class ListingsService extends BaseService {
 
     // Burada bilgileri getListingDetail ile döndürüyoruz.
     return await this.getListingDetail(checkUser.id, checkListing.id);
+  }
+
+  async getRemainingApply(user, listing_id) {
+    // Önce kullanıcıya bakılır
+    if (!user) {
+      throw new Error("User not found.");
+    }
+    const checkUser = await userService.getById(parseInt(user));
+    if (!checkUser) {
+      throw new Error("User not found.");
+    }
+
+    // İlana bakılır
+    const checkListing = await this.getById(parseInt(listing_id));
+    if (!checkListing) {
+      throw new Error("Listing not found.");
+    }
+
+    console.log(checkListing);
+    // Toplam ilan açılma sayısına bakılır
+    const totalOpened = await userOpenedListingsService.countwithCondition({
+      listing_id: parseInt(listing_id),
+    });
+
+    // Kullanıcı eğer daha önce açmışsa hata döndürme, açmamışsa max_apply ile toplam açılma sayısı döndürülür.
+    const checkOpened = await userOpenedListingsService.getWithCondition({
+      user_id: checkUser.id,
+      listing_id: parseInt(listing_id),
+    });
+
+    console.log(checkOpened);
+
+    if (checkOpened) {
+      return {
+        max_apply: checkListing.max_apply,
+        opened: totalOpened,
+        remaining: checkListing.max_apply - totalOpened,
+      };
+    }
+
+    // Eğer açılan sayı max_apply sayısını geçmişse hata döndürülür.
+    if (totalOpened >= checkListing.max_apply) {
+      throw new Error("Listing has reached the maximum number of apply.");
+    }
+
+    // max_apply ile toplam açılma sayısı döndürülür
+    // remaining 0'dan düşük olamaz eğer 0'dan düşükse 0 olarak döndürülür.
+    if (checkListing.max_apply - totalOpened < 0) {
+      return {
+        max_apply: checkListing.max_apply,
+        opened: totalOpened,
+        remaining: 0,
+      };
+    }
+    return {
+      max_apply: checkListing.max_apply,
+      opened: totalOpened,
+      remaining: checkListing.max_apply - totalOpened,
+    };
   }
 }
 
