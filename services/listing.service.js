@@ -101,11 +101,26 @@ class ListingsService extends BaseService {
     if (!checkUser) {
       throw new Error("User not found.");
     }
+    // Kategori eklenecek
 
     // Kullanıcı ve data birleştirilir
     const listingData = { ...data, user_id: user };
     // İlan oluşturulur.
-    return await this.create(listingData);
+
+    const created = await this.create(listingData);
+
+    // include_files array olarak geliyor ama boşta olabilir, her array için tek tek kayıt yapılacak.
+    if (data.include_files) {
+      if (data.include_files.length > 0) {
+        for (let i = 0; i < data.include_files.length; i++) {
+          await listingIncludeFilesService.create({
+            listing_id: created.id,
+            file_id: data.include_files[i],
+          });
+        }
+      }
+    }
+    return created;
   }
 
   /**

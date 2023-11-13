@@ -27,11 +27,13 @@ exports.create = async (req, res) => {
   try {
     // Auth middleware'dan gelen user kontrol edilir.
     const user = req.user;
+
     const result = await Listing.createListing(user.id, {
       category_id: req.body.category_id,
       description: req.body.description,
       country: req.body.country,
       is_active: false,
+      include_files: req.body.include_files,
     });
     return response.success(res, result, "Listing created successfully.");
   } catch (err) {
