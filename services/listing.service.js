@@ -5,7 +5,7 @@ const userService = require("./user.service");
 const userTransactionsService = require("./userTransactions.service");
 const userOpenedListingsService = require("./userOpenedListings.service");
 const listingIncludeFilesService = require("./listingIncludeFiles.service");
-const bunnyHelper = require("./../utils/bunny.helper");
+const listingCategoryService = require("./listingCategory.service");
 
 class ListingsService extends BaseService {
   constructor() {
@@ -101,7 +101,11 @@ class ListingsService extends BaseService {
     if (!checkUser) {
       throw new Error("User not found.");
     }
-    // Kategori eklenecek
+    // ListingCategoryService ile kategori kontrol edilir.
+    const checkCategory = await listingCategoryService.getById(parseInt(data.category_id));
+    if (!checkCategory) {
+      throw new Error("Category not found.");
+    }
 
     // Kullanıcı ve data birleştirilir
     const listingData = { ...data, user_id: user };
