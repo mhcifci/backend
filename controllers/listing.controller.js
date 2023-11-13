@@ -1,4 +1,5 @@
 const response = require("../interceptors/response.interceptor");
+const ListingCategories = require("../services/listingCategories.service");
 const Listing = require("../services/listing.service");
 
 exports.getAll = async (req, res) => {
@@ -47,6 +48,16 @@ exports.showInformation = async (req, res) => {
     const { id } = req.params;
     const result = await Listing.viewInformation(user.id, id);
     return response.success(res, result, "Listing opened successfully.");
+  } catch (err) {
+    return response.badRequest(res, err.message);
+  }
+};
+
+exports.getListingCategory = async (req, res) => {
+  try {
+    const { limit = 10, page = 1 } = req.query;
+    const result = await ListingCategories.getAllWithPagination(page, limit);
+    return response.success(res, result);
   } catch (err) {
     return response.badRequest(res, err.message);
   }

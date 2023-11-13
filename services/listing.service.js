@@ -1,11 +1,10 @@
-const { Op } = require("sequelize");
 const Listing = require("../models/listing.model");
 const BaseService = require("./base.service");
 const userService = require("./user.service");
 const userTransactionsService = require("./userTransactions.service");
 const userOpenedListingsService = require("./userOpenedListings.service");
 const listingIncludeFilesService = require("./listingIncludeFiles.service");
-const listingCategoryService = require("./listingCategory.service");
+const listingCategoryService = require("./listingCategories.service");
 
 class ListingsService extends BaseService {
   constructor() {
@@ -222,10 +221,6 @@ class ListingsService extends BaseService {
     // Bakiye varsa bu düşülür.
     const updateTransaction = await userTransactionsService.updateUserBalance(user, -checkListing.show_fee, `Listing View Fee #${checkListing.id}`);
     console.log("İlan ücreti düşüldü." + updateTransaction);
-
-    // TODO: İlan görüntülenme sayısı arttırılır.
-
-    console.log("İlan görüntülenme sayısı arttırıldı. + TODO");
 
     // İlan görüntülenme kaydı tutulur.
     await userOpenedListingsService.create({
