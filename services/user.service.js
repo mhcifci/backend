@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 
 const User = require("../models/user.model");
 const BaseService = require("./base.service");
+const UserDetails = require("./userDetails.service");
 
 class UserService extends BaseService {
   constructor() {
@@ -67,6 +68,17 @@ class UserService extends BaseService {
     }
 
     return user;
+  }
+
+  async getUserDetails(id) {
+    const user = await this.getById(id);
+    if (!user) {
+      throw new Error("Kullanıcı bulunamadı.");
+    }
+
+    const userProfilePicture = await UserDetails.getProfilePicture(user);
+
+    return { user, userProfilePicture };
   }
 }
 

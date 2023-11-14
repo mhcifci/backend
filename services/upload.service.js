@@ -1,8 +1,7 @@
 const UserUploadedFiles = require("../models/userUploadedFiles.model");
 const bunnyHelper = require("../utils/bunny.helper");
 const BaseService = require("./base.service");
-const userService = require("./user.service");
-
+const UserService = require("./user.service");
 class UploadService extends BaseService {
   constructor() {
     super(UserUploadedFiles);
@@ -18,7 +17,8 @@ class UploadService extends BaseService {
   async uploadFile(path, file, fileName, user, description) {
     // İlk önce kullanıcı var mı yok mu bakalım
     if (!user) throw new Error("User is not defined.");
-    const userExist = await userService.getById(parseInt(user));
+    // ! HATA VAR BAKILACAK : TypeError: UserService.getById is not a function
+    const userExist = await UserService.getById(user);
     if (!userExist) throw new Error("User does not exist.");
 
     // Dosya var mı yok mu bakalım

@@ -3,7 +3,6 @@ const Listing = require("../services/listing.service");
 
 const uuid = require("uuid");
 const path = require("path");
-const bunnyHelper = require("../utils/bunny.helper");
 const uploadService = require("../services/upload.service");
 
 exports.get = async (req, res) => {
