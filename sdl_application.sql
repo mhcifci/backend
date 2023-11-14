@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: mysql
--- Generation Time: Nov 13, 2023 at 11:33 PM
+-- Generation Time: Nov 14, 2023 at 06:21 PM
 -- Server version: 8.0.31
 -- PHP Version: 8.0.19
 
@@ -145,8 +145,15 @@ INSERT INTO `users` (`id`, `name`, `surname`, `phone`, `country_code`, `password
 CREATE TABLE `user_details` (
   `id` int NOT NULL,
   `user_id` int NOT NULL,
-  `img_url` varchar(255) NOT NULL
+  `img_id` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `user_details`
+--
+
+INSERT INTO `user_details` (`id`, `user_id`, `img_id`) VALUES
+(1, 15, 10);
 
 -- --------------------------------------------------------
 
@@ -243,7 +250,8 @@ INSERT INTO `user_uploaded_files` (`id`, `user_id`, `file_url`, `description`, `
 (2, 15, '15_4bc6a410-cd92-4ad7-9617-1445bd72bbd4.png', NULL, '2023-11-09 18:07:18', '2023-11-09 18:07:18'),
 (3, 15, '15_5ef9ec05-a73d-4155-b83e-ee702723e86b.png', NULL, '2023-11-09 18:07:21', '2023-11-09 18:07:21'),
 (4, 15, '15_93a4eeeb-cb75-4a1d-973e-1f2a9250b45b.png', NULL, '2023-11-09 18:07:22', '2023-11-09 18:07:22'),
-(5, 15, '15_b3feafc3-9389-4130-8d8f-f92010ab8bf3.png', NULL, '2023-11-09 18:07:23', '2023-11-09 18:07:23');
+(5, 15, '15_b3feafc3-9389-4130-8d8f-f92010ab8bf3.png', NULL, '2023-11-09 18:07:23', '2023-11-09 18:07:23'),
+(10, 15, '15_7d1f48cb-f6e9-40bb-8819-8bb2ec5f15df.png', 'Profile picture.', '2023-11-14 17:56:17', '2023-11-14 17:56:17');
 
 --
 -- Indexes for dumped tables
@@ -283,7 +291,8 @@ ALTER TABLE `users`
 -- Indexes for table `user_details`
 --
 ALTER TABLE `user_details`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `user_id` (`user_id`);
 
 --
 -- Indexes for table `user_fcm_tokens`
@@ -347,7 +356,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `user_details`
 --
 ALTER TABLE `user_details`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `user_fcm_tokens`
@@ -371,7 +380,7 @@ ALTER TABLE `user_transactions`
 -- AUTO_INCREMENT for table `user_uploaded_files`
 --
 ALTER TABLE `user_uploaded_files`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
