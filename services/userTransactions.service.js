@@ -17,6 +17,18 @@ class UserTransactionsService extends BaseService {
     return userBalance.getDataValue("total_balance") ? parseInt(userBalance.getDataValue("total_balance")) : 0;
   }
 
+  async getSingleTransactionDetail(user_id, transaction_id) {
+    const transaction = await UserTransactions.findOne({
+      where: { id: transaction_id, user_id: user_id },
+    });
+
+    if (!transaction) {
+      throw new Error("Detail not found.");
+    }
+
+    return transaction;
+  }
+
   async updateUserBalance(user_id, amount, reason = null) {
     if (!user_id) {
       throw new Error("User not found.");

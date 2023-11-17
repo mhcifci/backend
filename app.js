@@ -27,6 +27,7 @@ app.use("/token", require("./routes/token.route"));
 app.use("/listing", require("./routes/listing.route"));
 app.use("/upload", require("./routes/upload.route"));
 app.use("/profile", require("./routes/profile.route"));
+app.use("/transactions", require("./routes/transactions.route"));
 
 // For Invalid Routes
 app.use((req, res, next) => {
