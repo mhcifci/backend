@@ -8,6 +8,19 @@ app.use(express.json());
 const APP_PORT = process.env.APP_PORT || 3001;
 
 // Routes
+app.get("/", (req, res, next) => {
+  response.success(
+    res,
+    {
+      version: process.env.CURRENT_VERSION || "1.0.0",
+      name: "SDL Rest API",
+      status: "Running",
+    },
+    "SDL Rest API Working",
+    200
+  );
+});
+
 app.use("/users", require("./routes/user.route"));
 app.use("/auth", require("./routes/auth.route"));
 app.use("/token", require("./routes/token.route"));

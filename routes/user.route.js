@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const users = require("../controllers/admin/user.controller");
+const auth = require("../controllers/auth.controller");
 const response = require("../interceptors/response.interceptor");
 const { body, validationResult } = require("express-validator");
 
@@ -47,10 +47,6 @@ const userUpdateValidationRules = [
     }),
 ];
 
-router.get("/", users.getAllUsers);
-router.get("/:id", users.getUserById);
-router.post("/", userValidationRules, validate, users.createUser);
-router.put("/:id", userUpdateValidationRules, validate, users.updateUser);
-router.delete("/:id", users.deleteUser);
+router.post("/", userValidationRules, validate, auth.createUser);
 
 module.exports = router;

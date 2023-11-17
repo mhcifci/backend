@@ -80,6 +80,18 @@ class UserService extends BaseService {
 
     return { user, userProfilePicture };
   }
+
+  async changePassword(id) {
+    const user = await this.getById(id);
+    if (!user) {
+      throw new Error("Kullanıcı bulunamadı.");
+    }
+
+    // Kullanıcı şifresi güncellenir
+    const hashedPassword = await bcrypt.hash(data.password, 10);
+
+    return;
+  }
 }
 
 module.exports = UserService;
