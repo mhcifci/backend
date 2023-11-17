@@ -14,9 +14,42 @@ const validate = (req, res, next) => {
 const loginValidationRules = [body("email").isEmail().withMessage("Invalid email format"), body("password").notEmpty().withMessage("Password is required")];
 const lostPasswordRules = [body("email").isEmail().withMessage("Invalid email format")];
 
+//email, code, new_password, re_password gerekli olacak
+const changeLostPasswordRules = [
+  body("email").isEmail().withMessage("Invalid email format"),
+  body("code")
+    .isLength({
+      min: 6,
+      max: 12,
+    })
+    .notEmpty()
+    .withMessage("Code is required"),
+  body("new_password")
+    .isLength({
+      min: 6,
+      max: 12,
+    })
+    .notEmpty()
+    .withMessage("New password must be between 6 and 12 characters."),
+  body("re_password")
+    .isLength({
+      min: 6,
+      max: 12,
+    })
+    .notEmpty()
+    .withMessage("New password must be between 6 and 12 characters."),
+  body("re_password").custom((value, { req }) => {
+    if (value !== req.body.new_password) {
+      throw new Error("Passwords do not match.");
+    }
+    return true;
+  }),
+];
+
 router.post("/login", loginValidationRules, validate, auth.loginUser);
 
 // For a sending lost password email
 router.post("/lost-password", lostPasswordRules, validate, auth.sendLostPassword);
+router.post("/change-lost-password", changeLostPasswordRules, validate, auth.changeLostPassword);
 
 module.exports = router;

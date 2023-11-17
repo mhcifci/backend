@@ -43,8 +43,18 @@ exports.createUser = async (req, res) => {
 exports.sendLostPassword = async (req, res) => {
   try {
     const { email } = req.body;
-    const process = await authService.sendLostPassword(email);
-    return response.success(res, process);
+    await authService.sendLostPassword(email);
+    return response.success(res, [], "Email sent.");
+  } catch (err) {
+    return response.badRequest(res, err.message);
+  }
+};
+
+exports.changeLostPassword = async (req, res) => {
+  try {
+    const { email, code, new_password, re_password } = req.body;
+    await authService.changeLostPassword(code, email, new_password, re_password);
+    return response.success(res, [], "Password changed.");
   } catch (err) {
     return response.badRequest(res, err.message);
   }

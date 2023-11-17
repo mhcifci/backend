@@ -12,6 +12,11 @@ const UserLostPasswords = sequelize.define(
       type: Sequelize.STRING,
       allowNull: false,
     },
+    is_used: {
+      type: Sequelize.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
   },
   { timestamps: true, underscored: true, tableName: "user_lost_passwords" }
 );

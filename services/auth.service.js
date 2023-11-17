@@ -57,10 +57,11 @@ class AuthService extends BaseService {
       throw new Error("User not found.");
     }
 
-    // Kullanıcı saatte bir defa kod gönderebilir
+    // Kullanıcı saatte bir defa kod gönderebilir, ancak kod kullanılmamışsa
     const existingCode = await UserLostPasswords.findOne({
       where: {
         user_id: existingUser.id,
+        is_used: false,
         created_at: {
           [Op.gte]: new Date(new Date() - 60 * 60 * 1000),
         },
@@ -78,11 +79,71 @@ class AuthService extends BaseService {
     await UserLostPasswords.create({
       user_id: existingUser.id,
       code: code,
+      is_used: false,
     });
 
     // TODO: Send email to user
 
     // return true;
+    return true;
+  }
+
+  async changeLostPassword(code, email, new_password, re_password) {
+    // Find user
+    const existingUser = await this.getWithCondition({
+      email: email,
+    });
+
+    if (!existingUser) {
+      throw new Error("User not found.");
+    }
+
+    // Find code
+    const existingCode = await UserLostPasswords.findOne({
+      where: {
+        user_id: existingUser.id,
+        created_at: {
+          [Op.gte]: new Date(new Date() - 60 * 60 * 1000),
+        },
+      },
+    });
+
+    if (!existingCode) {
+      throw new Error("Code not found.");
+    }
+
+    // Check code
+    if (existingCode.code !== code) {
+      throw new Error("Code is incorrect.");
+    }
+
+    // Check code is used
+    if (existingCode.is_used) {
+      throw new Error("Code is already used.");
+    }
+
+    // Check password
+    if (new_password !== re_password) {
+      throw new Error("Passwords do not match.");
+    }
+
+    // Update user password
+    await this.update(existingUser.id, {
+      password: await bcrypt.hash(new_password, 10),
+    });
+
+    // Update code to is_used
+    await UserLostPasswords.update(
+      {
+        is_used: true,
+      },
+      {
+        where: {
+          id: existingCode.id,
+        },
+      }
+    );
+
     return true;
   }
 }
