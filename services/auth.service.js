@@ -1,5 +1,6 @@
 const { Op } = require("sequelize");
 const User = require("../models/user.model");
+const UserLostPasswords = require("../models/userLostPasswords.model");
 const BaseService = require("./base.service");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -40,6 +41,49 @@ class AuthService extends BaseService {
     );
     // return await this.create(user);
     return { user: existingUser, token: token };
+  }
+
+  /**
+   * Sending email to the user with reset password link
+   * return {string} Code
+   */
+  async sendLostPassword(email) {
+    // Find user
+    const existingUser = await this.getWithCondition({
+      email: email,
+    });
+
+    if (!existingUser) {
+      throw new Error("User not found.");
+    }
+
+    // Kullanıcı saatte bir defa kod gönderebilir
+    const existingCode = await UserLostPasswords.findOne({
+      where: {
+        user_id: existingUser.id,
+        created_at: {
+          [Op.gte]: new Date(new Date() - 60 * 60 * 1000),
+        },
+      },
+    });
+
+    if (existingCode) {
+      throw new Error("You can send code once an hour.");
+    }
+
+    // 6 haneli sayısal kod üretelim
+    const code = Math.floor(100000 + Math.random() * 900000);
+
+    // Save code to database
+    await UserLostPasswords.create({
+      user_id: existingUser.id,
+      code: code,
+    });
+
+    // TODO: Send email to user
+
+    // return true;
+    return true;
   }
 }
 

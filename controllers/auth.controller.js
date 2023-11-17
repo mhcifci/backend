@@ -39,3 +39,13 @@ exports.createUser = async (req, res) => {
     return response.badRequest(res, err.message);
   }
 };
+
+exports.sendLostPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const process = await authService.sendLostPassword(email);
+    return response.success(res, process);
+  } catch (err) {
+    return response.badRequest(res, err.message);
+  }
+};

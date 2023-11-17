@@ -12,6 +12,11 @@ const validate = (req, res, next) => {
   return response.badRequest(res, "Required fields could not be verified.");
 };
 const loginValidationRules = [body("email").isEmail().withMessage("Invalid email format"), body("password").notEmpty().withMessage("Password is required")];
+const lostPasswordRules = [body("email").isEmail().withMessage("Invalid email format")];
+
 router.post("/login", loginValidationRules, validate, auth.loginUser);
+
+// For a sending lost password email
+router.post("/lost-password", lostPasswordRules, validate, auth.sendLostPassword);
 
 module.exports = router;
