@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon app.js"
+    "start": "nodemon app.js",
+    "find-circular-deps": "madge . -c",
+    "graph-circular-deps": "madge . -i ./img.png"
   },
   "keywords": [],
   "author": "",
@@ -30,5 +32,8 @@
     "sequelize": "^6.29.0",
     "twilio": "^4.13.0",
     "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "madge": "^6.1.0"
   }
 }

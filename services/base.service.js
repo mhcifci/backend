@@ -14,6 +14,7 @@ class BaseService {
 
   async getById(id) {
     try {
+      console.log("girdi");
       const record = await this.model.findByPk(parseInt(id));
       return record;
     } catch (error) {

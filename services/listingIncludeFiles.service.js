@@ -8,4 +8,4 @@ class ListingIncludeFilesService extends BaseService {
   }
 }
 
-module.exports = new ListingIncludeFilesService();
+module.exports = ListingIncludeFilesService;

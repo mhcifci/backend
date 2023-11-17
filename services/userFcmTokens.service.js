@@ -1,7 +1,9 @@
 const UserFcmTokens = require("../models/userFcmTokens.model");
 const BaseService = require("./base.service");
-const userService = require("./user.service");
+const user = require("./user.service");
 
+// Start Class
+const userService = new user();
 class userFcmTokens extends BaseService {
   constructor() {
     super(UserFcmTokens);
@@ -40,4 +42,4 @@ class userFcmTokens extends BaseService {
   }
 }
 
-module.exports = new userFcmTokens();
+module.exports = userFcmTokens;

@@ -8,4 +8,4 @@ class ListingCategoryService extends BaseService {
   }
 }
 
-module.exports = new ListingCategoryService();
+module.exports = ListingCategoryService;

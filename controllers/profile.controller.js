@@ -1,9 +1,15 @@
 const response = require("../interceptors/response.interceptor");
 const User = require("../services/user.service");
 const UserDetails = require("../services/userDetails.service");
-const uploadService = require("../services/upload.service");
+const Upload = require("../services/upload.service");
 const uuid = require("uuid");
 const path = require("path");
+
+// Start Class
+const uploadService = new Upload();
+const UserDetailsService = new UserDetails();
+const UserService = new User();
+
 // Change profile picture controller.
 exports.changeProfilePicture = async (req, res) => {
   try {
@@ -12,7 +18,7 @@ exports.changeProfilePicture = async (req, res) => {
     const fileExtension = path.extname(req.file.originalname);
     const fileName = user.id + "_" + uuid.v4() + fileExtension;
     const upload = await uploadService.uploadFile("/", req.file.buffer, fileName, user.id, "Profile picture.");
-    const data = await UserDetails.changeProfilePicture(user, upload);
+    const data = await UserDetailsService.changeProfilePicture(user, upload);
     return response.success(res, data);
   } catch (err) {
     console.log(err);
@@ -23,7 +29,7 @@ exports.changeProfilePicture = async (req, res) => {
 exports.getProfileInformation = async (req, res) => {
   try {
     const user = req.user;
-    const data = await User.getUserDetails(user.id);
+    const data = await UserService.getUserDetails(user.id);
     return response.success(res, data);
   } catch (err) {
     return response.badRequest(res, err.message);

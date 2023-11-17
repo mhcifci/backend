@@ -1,10 +1,17 @@
 const Listing = require("../models/listing.model");
 const BaseService = require("./base.service");
-const userService = require("./user.service");
-const userTransactionsService = require("./userTransactions.service");
-const userOpenedListingsService = require("./userOpenedListings.service");
-const listingIncludeFilesService = require("./listingIncludeFiles.service");
-const listingCategoryService = require("./listingCategories.service");
+const user = require("./user.service");
+const userTransactions = require("./userTransactions.service");
+const userOpenedListings = require("./userOpenedListings.service");
+const listingIncludeFiles = require("./listingIncludeFiles.service");
+const listingCategory = require("./listingCategories.service");
+
+// Start Class
+const userService = new user();
+const userTransactionsService = new userTransactions();
+const userOpenedListingsService = new userOpenedListings();
+const listingIncludeFilesService = new listingIncludeFiles();
+const listingCategoryService = new listingCategory();
 
 class ListingsService extends BaseService {
   constructor() {
@@ -295,4 +302,4 @@ class ListingsService extends BaseService {
   }
 }
 
-module.exports = new ListingsService();
+module.exports = ListingsService;

@@ -22,10 +22,11 @@ exports.create = async (req, res) => {
     const user = req.user;
     const fileExtension = path.extname(req.file.originalname);
     const fileName = user.id + "_" + uuid.v4() + fileExtension;
-    const data = await uploadService.uploadFile("/", req.file.buffer, fileName, user.id, null);
+    const data = await uploadService.uploadFile("/", req.file.buffer, fileName, parseInt(user.id), null);
 
     return response.success(res, data);
   } catch (err) {
+    console.log(err);
     return response.badRequest(res, err.message);
   }
 };

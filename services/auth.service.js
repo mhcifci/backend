@@ -43,4 +43,4 @@ class AuthService extends BaseService {
   }
 }
 
-module.exports = new AuthService();
+module.exports = AuthService;

@@ -1,6 +1,9 @@
 const jwt = require("jsonwebtoken");
 const response = require("../interceptors/response.interceptor");
-const userService = require("../services/user.service");
+const User = require("../services/user.service");
+
+// Start Class
+const userService = new User();
 
 const authMiddleware = async (req, res, next) => {
   try {

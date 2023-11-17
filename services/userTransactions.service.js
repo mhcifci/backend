@@ -37,4 +37,4 @@ class UserTransactionsService extends BaseService {
   }
 }
 
-module.exports = new UserTransactionsService();
+module.exports = UserTransactionsService;

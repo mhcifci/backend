@@ -1,7 +1,6 @@
 const UserUploadedFiles = require("../models/userUploadedFiles.model");
 const bunnyHelper = require("../utils/bunny.helper");
 const BaseService = require("./base.service");
-const UserService = require("./user.service");
 class UploadService extends BaseService {
   constructor() {
     super(UserUploadedFiles);
@@ -15,38 +14,36 @@ class UploadService extends BaseService {
    * @param {*} comment Optional comment
    */
   async uploadFile(path, file, fileName, user, description) {
-    // İlk önce kullanıcı var mı yok mu bakalım
-    if (!user) throw new Error("User is not defined.");
-    // ! HATA VAR BAKILACAK : TypeError: UserService.getById is not a function
-    const userExist = await UserService.getById(user);
-    if (!userExist) throw new Error("User does not exist.");
+    try {
+      // Dosya var mı yok mu bakalım
+      if (!file) throw new Error("File is not defined.");
+      if (!path) throw new Error("Path is not defined.");
 
-    // Dosya var mı yok mu bakalım
-    if (!file) throw new Error("File is not defined.");
-    if (!path) throw new Error("Path is not defined.");
+      // Dosya Bunny CDN'e yüklenir
 
-    // Dosya Bunny CDN'e yüklenir
+      // eğer path varsa ve "/" eşit değilse, path oluşturulur
+      if (path && path !== "/") {
+        const result = await bunnyHelper.createDirectory(path);
+        if (result && result.HttpCode !== 201) throw new Error("Directory could not be created on CDN.");
+      }
+      // path "/" eşit değilse path ile beraber dosya adı gönderilir
+      if (path && path !== "/") fileName = path + "/" + fileName;
 
-    // eğer path varsa ve "/" eşit değilse, path oluşturulur
-    if (path && path !== "/") {
-      const result = await bunnyHelper.createDirectory(path);
-      if (result && result.HttpCode !== 201) throw new Error("Directory could not be created on CDN.");
+      const result = await bunnyHelper.uploadFile(file, fileName);
+      if (result && result.HttpCode !== 201) throw new Error("File could not be uploaded to CDN.");
+
+      // Dosya veritabanına kaydedilir
+      const data = {
+        file_url: fileName,
+        user_id: user,
+        description: description,
+      };
+
+      return await this.create(data);
+    } catch (error) {
+      console.log(error);
     }
-    // path "/" eşit değilse path ile beraber dosya adı gönderilir
-    if (path && path !== "/") fileName = path + "/" + fileName;
-
-    const result = await bunnyHelper.uploadFile(file, fileName);
-    if (result && result.HttpCode !== 201) throw new Error("File could not be uploaded to CDN.");
-
-    // Dosya veritabanına kaydedilir
-    const data = {
-      file_url: fileName,
-      user_id: user,
-      description: description,
-    };
-
-    return await this.create(data);
   }
 }
 
-module.exports = new UploadService();
+module.exports = UploadService;

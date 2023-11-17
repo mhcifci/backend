@@ -8,6 +8,7 @@ const UserDetails = require("./userDetails.service");
 class UserService extends BaseService {
   constructor() {
     super(User);
+    this.UserDetailsService = new UserDetails();
   }
 
   async createUser(data) {
@@ -75,11 +76,10 @@ class UserService extends BaseService {
     if (!user) {
       throw new Error("Kullanıcı bulunamadı.");
     }
-
-    const userProfilePicture = await UserDetails.getProfilePicture(user);
+    const userProfilePicture = await this.UserDetailsService.getProfilePicture(user);
 
     return { user, userProfilePicture };
   }
 }
 
-module.exports = new UserService();
+module.exports = UserService;

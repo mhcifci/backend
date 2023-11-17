@@ -1,7 +1,10 @@
 const { Op } = require("sequelize");
 const Companies = require("../models/companies.model");
 const BaseService = require("./base.service");
-const UserService = require("./user.service");
+const User = require("./user.service");
+
+// Start Class
+const UserService = new User();
 
 class CompaniesService extends BaseService {
   constructor() {
@@ -51,4 +54,4 @@ class CompaniesService extends BaseService {
   }
 }
 
-module.exports = new CompaniesService();
+module.exports = CompaniesService;
