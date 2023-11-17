@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: mysql
--- Generation Time: Nov 14, 2023 at 06:21 PM
+-- Generation Time: Nov 17, 2023 at 11:10 PM
 -- Server version: 8.0.31
 -- PHP Version: 8.0.19
 
@@ -132,9 +132,10 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `surname`, `phone`, `country_code`, `password`, `email`, `is_active`, `created_at`, `updated_at`) VALUES
-(15, 'Emre', 'Kara', '5338350024', '90', '$2b$10$XWNpHPsLHsurafzWVGcaBerKxEE.c8Xr/OyTzOO2cHdwhTGr//FoK', 'mhcifci@gmail2.com', 1, '2023-11-03 16:56:43', '2023-11-03 16:56:43'),
+(15, 'Emre', 'Kara', '5338350024', '90', '$2b$10$A3K/Mrgo7PJsp8OlQnESVOq0iV1rUuhvg70eiHtC3C1vOe9q9NpQ2', 'mhcifci@gmail2.com', 1, '2023-11-03 16:56:43', '2023-11-17 22:30:24'),
 (16, 'Emre', 'Kara', '5338350025', '90', '$2b$10$Pp2Qp11wu6Uj4zSDyXWIruOd.KaoVTmfAaICHyg8P4nBWzBGHt7L6', 'mhcifci@gmail3.com', 1, '2023-11-13 23:04:19', '2023-11-13 23:04:19'),
-(17, 'Yeni', 'Kullanıcı', '5338350026', '90', '$2b$10$guCejIXOxwcmJuTep4bnSurB.LazoATtCGvHSJ0SctNidKFQwdKpy', 'apply.cifci@gmail.com', 1, '2023-11-13 23:14:17', '2023-11-13 23:14:17');
+(17, 'Yeni', 'Kullanıcı', '5338350026', '90', '$2b$10$5Clqbho3hEVQeWGIeHDbluqJ0m0qdl.5XfRFLAWu9k.dzOw0a.tjm', 'apply.cifci@gmail.com', 1, '2023-11-13 23:14:17', '2023-11-17 23:09:20'),
+(18, 'Yeni', 'Kullanıcı', '5338350028', '90', '$2b$10$AlD7OQ4ZMmgKGzSKqMFPxeQqPcTtQyPqqYPgH4uDmpZhFQ.I3B4s6', 'apply.cifci44@gmail.com', 1, '2023-11-17 22:16:04', '2023-11-17 22:16:04');
 
 -- --------------------------------------------------------
 
@@ -153,7 +154,7 @@ CREATE TABLE `user_details` (
 --
 
 INSERT INTO `user_details` (`id`, `user_id`, `img_id`) VALUES
-(1, 15, 10);
+(1, 15, 17);
 
 -- --------------------------------------------------------
 
@@ -174,7 +175,29 @@ CREATE TABLE `user_fcm_tokens` (
 --
 
 INSERT INTO `user_fcm_tokens` (`id`, `token`, `user_id`, `created_at`, `updated_at`) VALUES
-(2, 'qwewqe55', 15, '2023-11-03 18:24:21', '2023-11-03 18:24:31');
+(2, 'qwewqe55', 15, '2023-11-03 18:24:21', '2023-11-17 21:57:54');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user_lost_passwords`
+--
+
+CREATE TABLE `user_lost_passwords` (
+  `id` int NOT NULL,
+  `user_id` int NOT NULL,
+  `code` varchar(15) NOT NULL,
+  `is_used` tinyint NOT NULL,
+  `created_at` timestamp NOT NULL,
+  `updated_at` timestamp NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `user_lost_passwords`
+--
+
+INSERT INTO `user_lost_passwords` (`id`, `user_id`, `code`, `is_used`, `created_at`, `updated_at`) VALUES
+(7, 17, '601555', 1, '2023-11-17 23:08:47', '2023-11-17 23:09:20');
 
 -- --------------------------------------------------------
 
@@ -251,7 +274,14 @@ INSERT INTO `user_uploaded_files` (`id`, `user_id`, `file_url`, `description`, `
 (3, 15, '15_5ef9ec05-a73d-4155-b83e-ee702723e86b.png', NULL, '2023-11-09 18:07:21', '2023-11-09 18:07:21'),
 (4, 15, '15_93a4eeeb-cb75-4a1d-973e-1f2a9250b45b.png', NULL, '2023-11-09 18:07:22', '2023-11-09 18:07:22'),
 (5, 15, '15_b3feafc3-9389-4130-8d8f-f92010ab8bf3.png', NULL, '2023-11-09 18:07:23', '2023-11-09 18:07:23'),
-(10, 15, '15_7d1f48cb-f6e9-40bb-8819-8bb2ec5f15df.png', 'Profile picture.', '2023-11-14 17:56:17', '2023-11-14 17:56:17');
+(10, 15, '15_7d1f48cb-f6e9-40bb-8819-8bb2ec5f15df.png', 'Profile picture.', '2023-11-14 17:56:17', '2023-11-14 17:56:17'),
+(11, 15, '15_25e1875f-99ee-448b-a9ee-c3eb6845cdb3.png', 'Profile picture.', '2023-11-15 16:52:28', '2023-11-15 16:52:28'),
+(12, 15, '15_e0dcb62a-bc45-4f72-90c2-2c689c9915da.png', 'Profile picture.', '2023-11-17 21:42:04', '2023-11-17 21:42:04'),
+(13, 15, '15_59fd24f2-f135-4dfe-8b90-c810cba42ed6.png', 'Profile picture.', '2023-11-17 21:45:10', '2023-11-17 21:45:10'),
+(14, 15, '15_d7144c48-6390-44a7-aa09-9b2a6b25cd9d.png', 'Profile picture.', '2023-11-17 21:49:50', '2023-11-17 21:49:50'),
+(15, 15, '15_29eba462-d044-4ab4-b077-c7c9b65ea644.png', 'Profile picture.', '2023-11-17 21:50:26', '2023-11-17 21:50:26'),
+(16, 15, '15_a821f64e-2d93-4891-9267-b0935a30a011.png', 'Profile picture.', '2023-11-17 21:52:02', '2023-11-17 21:52:02'),
+(17, 15, '15_eb14902b-df50-45ff-85a9-a35abb790489.png', 'Profile picture.', '2023-11-17 21:57:19', '2023-11-17 21:57:19');
 
 --
 -- Indexes for dumped tables
@@ -298,6 +328,12 @@ ALTER TABLE `user_details`
 -- Indexes for table `user_fcm_tokens`
 --
 ALTER TABLE `user_fcm_tokens`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `user_lost_passwords`
+--
+ALTER TABLE `user_lost_passwords`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -350,7 +386,7 @@ ALTER TABLE `listings_include_files`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `user_details`
@@ -363,6 +399,12 @@ ALTER TABLE `user_details`
 --
 ALTER TABLE `user_fcm_tokens`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `user_lost_passwords`
+--
+ALTER TABLE `user_lost_passwords`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `user_opened_listings`
@@ -380,7 +422,7 @@ ALTER TABLE `user_transactions`
 -- AUTO_INCREMENT for table `user_uploaded_files`
 --
 ALTER TABLE `user_uploaded_files`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
