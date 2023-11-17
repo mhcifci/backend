@@ -19,33 +19,6 @@ const userValidationRules = [
   body("password").notEmpty().withMessage("Password is required"),
   body("email").isEmail().withMessage("Invalid email format"),
 ];
-const userUpdateValidationRules = [
-  body("name").optional(),
-  body("surname").optional(),
-  body("phone").optional(),
-  body("country_code").optional(),
-  body("password").optional(),
-  body("email")
-    .optional()
-    .isEmail()
-    .withMessage("Geçersiz e-posta formatı")
-    .custom(async (value, { req }) => {
-      // E-posta adresi benzersiz mi kontrol et
-      const existingUser = await users.getUserByEmail(value);
-      if (existingUser && existingUser.id !== req.params.id) {
-        throw new Error("Bu e-posta adresi zaten kullanılıyor");
-      }
-    }),
-  body("phone")
-    .optional()
-    .custom(async (value, { req }) => {
-      // Telefon numarası benzersiz mi kontrol et
-      const existingUser = await users.getUserByPhone(value);
-      if (existingUser && existingUser.id !== req.params.id) {
-        throw new Error("Bu telefon numarası zaten kullanılıyor");
-      }
-    }),
-];
 
 router.post("/", userValidationRules, validate, auth.createUser);
 

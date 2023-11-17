@@ -35,3 +35,14 @@ exports.getProfileInformation = async (req, res) => {
     return response.badRequest(res, err.message);
   }
 };
+
+exports.changePassword = async (req, res) => {
+  try {
+    const user = req.user;
+    const { old_password, new_password } = req.body;
+    const data = await UserService.changePassword(user.id, old_password, new_password);
+    return response.success(res, data, "Password changed successfully.");
+  } catch (err) {
+    return response.badRequest(res, err.message);
+  }
+};

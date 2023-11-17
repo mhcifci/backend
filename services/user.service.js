@@ -5,10 +5,12 @@ const User = require("../models/user.model");
 const BaseService = require("./base.service");
 const UserDetails = require("./userDetails.service");
 
+// Start Class
+const UserDetailsService = new UserDetails();
+
 class UserService extends BaseService {
   constructor() {
     super(User);
-    this.UserDetailsService = new UserDetails();
   }
 
   async createUser(data) {
@@ -76,21 +78,29 @@ class UserService extends BaseService {
     if (!user) {
       throw new Error("Kullanıcı bulunamadı.");
     }
-    const userProfilePicture = await this.UserDetailsService.getProfilePicture(user);
+    const userProfilePicture = await UserDetailsService.getProfilePicture(user);
 
     return { user, userProfilePicture };
   }
 
-  async changePassword(id) {
+  async changePassword(id, old_password, new_password) {
     const user = await this.getById(id);
     if (!user) {
-      throw new Error("Kullanıcı bulunamadı.");
+      throw new Error("User not found.");
     }
 
+    const isPasswordMatch = await bcrypt.compare(old_password, user.password);
+    if (!isPasswordMatch) {
+      throw new Error("Old password not match.");
+    }
     // Kullanıcı şifresi güncellenir
-    const hashedPassword = await bcrypt.hash(data.password, 10);
+    const hashedPassword = await bcrypt.hash(new_password, 10);
 
-    return;
+    const updatePassword = await user.update({
+      password: hashedPassword,
+    });
+
+    return updatePassword;
   }
 }
 
