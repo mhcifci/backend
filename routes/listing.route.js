@@ -31,4 +31,11 @@ router.post("/new", authMiddleware, rules, validate, listing.create);
 // Followed Listings
 router.get("/followed", authMiddleware, listing.getFollowingListings);
 
+// MARK Follow Listing
+router.get("/follow/:id", authMiddleware, listing.doFollow);
+// MARK Unfollow Listing
+router.get("/unfollow/:id", authMiddleware, listing.deleteFollow);
+// MARK Not Interested Listing
+router.get("/not-interested/:id", authMiddleware, listing.notInterested);
+
 module.exports = router;

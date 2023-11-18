@@ -1,10 +1,12 @@
 const response = require("../interceptors/response.interceptor");
 const ListingCategories = require("../services/listingCategories.service");
 const Listing = require("../services/listing.service");
+const UserFollowListings = require("../services/userFollowListings.service");
 
 // Start Class
 const listingService = new Listing();
 const listingCategoryService = new ListingCategories();
+const userFollowListingsService = new UserFollowListings();
 
 exports.getAll = async (req, res) => {
   try {
@@ -108,6 +110,42 @@ exports.getListingCategory = async (req, res) => {
     const { limit = 10, page = 1 } = req.query;
     const result = await listingCategoryService.getAllWithPagination(page, limit);
     return response.success(res, result);
+  } catch (err) {
+    return response.badRequest(res, err.message);
+  }
+};
+
+// İlanı takip eder.
+exports.doFollow = async (req, res) => {
+  try {
+    const user = req.user;
+    const { id } = req.params;
+    await userFollowListingsService.doFollowListing(user.id, id);
+    return response.success(res, []);
+  } catch (err) {
+    return response.badRequest(res, err.message);
+  }
+};
+
+// İlanı takipten çıkarır.
+exports.deleteFollow = async (req, res) => {
+  try {
+    const user = req.user;
+    const { id } = req.params;
+    await userFollowListingsService.deleteFollowListing(user.id, id);
+    return response.success(res, []);
+  } catch (err) {
+    return response.badRequest(res, err.message);
+  }
+};
+
+// İlgilenmiyor olarak işaretler.
+exports.notInterested = async (req, res) => {
+  try {
+    const user = req.user;
+    const { id } = req.params;
+    await userFollowListingsService.notInterested(user.id, id);
+    return response.success(res, []);
   } catch (err) {
     return response.badRequest(res, err.message);
   }
