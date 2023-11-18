@@ -8,8 +8,9 @@ const listingCategoryService = new ListingCategories();
 
 exports.getAll = async (req, res) => {
   try {
+    const user = req.user;
     const { limit = 10, page = 1 } = req.query;
-    const result = await listingService.getAllWithPagination(page, limit);
+    const result = await listingService.getListingsbyUser(user.id, page, limit);
     return response.success(res, result);
   } catch (err) {
     return response.badRequest(res, err.message);
@@ -40,6 +41,40 @@ exports.create = async (req, res) => {
       include_files: req.body.include_files,
     });
     return response.success(res, result, "Listing created successfully.");
+  } catch (err) {
+    return response.badRequest(res, err.message);
+  }
+};
+
+// All
+exports.getListingCategories = async (req, res) => {
+  try {
+    const { limit = 10, page = 1 } = req.query;
+    const result = await listingCategoryService.getAllWithPagination(page, limit);
+    return response.success(res, result);
+  } catch (err) {
+    return response.badRequest(res, err.message);
+  }
+};
+
+// Single category information
+exports.getListingCategory = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await listingService.getById(parseInt(id));
+    return response.success(res, result);
+  } catch (err) {
+    return response.badRequest(res, err.message);
+  }
+};
+
+exports.getListingsByCategory = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { limit = 10, page = 1 } = req.query;
+
+    const result = await listingService.getListingsbyCategory(parseInt(page), parseInt(limit), parseInt(id));
+    return response.success(res, result);
   } catch (err) {
     return response.badRequest(res, err.message);
   }

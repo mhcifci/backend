@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: mysql
--- Generation Time: Nov 17, 2023 at 11:10 PM
+-- Generation Time: Nov 18, 2023 at 02:32 AM
 -- Server version: 8.0.31
 -- PHP Version: 8.0.19
 
@@ -39,6 +39,54 @@ CREATE TABLE `companies` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `jobs`
+--
+
+CREATE TABLE `jobs` (
+  `id` int NOT NULL,
+  `user_id` int NOT NULL,
+  `category_id` int NOT NULL,
+  `description` text NOT NULL,
+  `country` varchar(55) NOT NULL COMMENT 'Bakılacak',
+  `is_active` tinyint NOT NULL,
+  `show_fee` int NOT NULL,
+  `is_deleted` tinyint NOT NULL DEFAULT '0',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `jobs`
+--
+
+INSERT INTO `jobs` (`id`, `user_id`, `category_id`, `description`, `country`, `is_active`, `show_fee`, `is_deleted`, `created_at`, `updated_at`) VALUES
+(1, 15, 1, 'Test iş ilanı', 'RM 177', 1, 0, 0, '2023-11-18 00:14:03', NULL),
+(3, 15, 1, 'Lorem ipsum set amet dolor', 'RM 177', 0, 0, 0, '2023-11-18 01:07:35', '2023-11-18 01:07:35');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `jobs_categories`
+--
+
+CREATE TABLE `jobs_categories` (
+  `id` int NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `jobs_categories`
+--
+
+INSERT INTO `jobs_categories` (`id`, `title`, `description`, `created_at`, `updated_at`) VALUES
+(1, 'Truck Driver', 'Truck drivers are listed here', '2023-11-18 00:13:03', NULL);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `listings`
 --
 
@@ -62,7 +110,8 @@ CREATE TABLE `listings` (
 
 INSERT INTO `listings` (`id`, `user_id`, `category_id`, `description`, `country`, `is_active`, `max_apply`, `show_fee`, `is_deleted`, `created_at`, `updated_at`) VALUES
 (3, 15, 1, 'Lorem ipsum set amet dolor', 'RM 177', 1, 3, 8, 0, '2023-11-08 17:14:00', '2023-11-08 17:14:00'),
-(5, 15, 1, 'Lorem ipsum set amet dolor', 'RM 177', 1, 3, 8, 0, '2023-11-08 18:03:03', '2023-11-08 18:03:03');
+(5, 15, 1, 'Lorem ipsum set amet dolor', 'RM 177', 1, 3, 8, 0, '2023-11-08 18:03:03', '2023-11-08 18:03:03'),
+(9, 15, 1, 'Lorem ipsum set amet dolor', 'RM 177', 1, 3, 8, 0, '2023-11-08 18:03:03', '2023-11-08 18:03:03');
 
 -- --------------------------------------------------------
 
@@ -180,6 +229,29 @@ INSERT INTO `user_fcm_tokens` (`id`, `token`, `user_id`, `created_at`, `updated_
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `user_follow_listings`
+--
+
+CREATE TABLE `user_follow_listings` (
+  `id` int NOT NULL,
+  `user_id` int NOT NULL,
+  `listing_id` int NOT NULL,
+  `is_following` tinyint NOT NULL DEFAULT '1',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `user_follow_listings`
+--
+
+INSERT INTO `user_follow_listings` (`id`, `user_id`, `listing_id`, `is_following`, `created_at`, `updated_at`) VALUES
+(1, 16, 5, 1, '2023-11-18 02:00:32', NULL),
+(2, 16, 3, 0, '2023-11-18 02:00:32', NULL);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `user_lost_passwords`
 --
 
@@ -198,6 +270,29 @@ CREATE TABLE `user_lost_passwords` (
 
 INSERT INTO `user_lost_passwords` (`id`, `user_id`, `code`, `is_used`, `created_at`, `updated_at`) VALUES
 (7, 17, '601555', 1, '2023-11-17 23:08:47', '2023-11-17 23:09:20');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user_opened_jobs`
+--
+
+CREATE TABLE `user_opened_jobs` (
+  `id` int NOT NULL,
+  `user_id` int NOT NULL,
+  `transaction_id` int NOT NULL,
+  `job_id` int NOT NULL,
+  `created_at` timestamp NOT NULL,
+  `updated_at` timestamp NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `user_opened_jobs`
+--
+
+INSERT INTO `user_opened_jobs` (`id`, `user_id`, `transaction_id`, `job_id`, `created_at`, `updated_at`) VALUES
+(30, 17, 34, 1, '2023-11-18 00:38:33', '2023-11-18 00:38:33'),
+(31, 16, 35, 1, '2023-11-18 00:43:00', '2023-11-18 00:43:00');
 
 -- --------------------------------------------------------
 
@@ -248,7 +343,9 @@ INSERT INTO `user_transactions` (`id`, `user_id`, `amount`, `reason`, `created_a
 (30, 16, -8, 'Listing View Fee #4', '2023-11-13 23:08:37', '2023-11-13 23:08:37'),
 (31, 16, -8, 'Listing View Fee #5', '2023-11-13 23:08:52', '2023-11-13 23:08:52'),
 (32, 16, -8, 'Listing View Fee #3', '2023-11-13 23:08:53', '2023-11-13 23:08:53'),
-(33, 16, -8, 'Listing View Fee #3', '2023-11-13 23:12:50', '2023-11-13 23:12:50');
+(33, 16, -8, 'Listing View Fee #3', '2023-11-13 23:12:50', '2023-11-13 23:12:50'),
+(34, 17, 0, 'Jobs View Fee #1', '2023-11-18 00:38:33', '2023-11-18 00:38:33'),
+(35, 16, 0, 'Jobs View Fee #1', '2023-11-18 00:43:00', '2023-11-18 00:43:00');
 
 -- --------------------------------------------------------
 
@@ -294,6 +391,18 @@ ALTER TABLE `companies`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `jobs`
+--
+ALTER TABLE `jobs`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `jobs_categories`
+--
+ALTER TABLE `jobs_categories`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `listings`
 --
 ALTER TABLE `listings`
@@ -331,9 +440,21 @@ ALTER TABLE `user_fcm_tokens`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `user_follow_listings`
+--
+ALTER TABLE `user_follow_listings`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `user_lost_passwords`
 --
 ALTER TABLE `user_lost_passwords`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `user_opened_jobs`
+--
+ALTER TABLE `user_opened_jobs`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -365,10 +486,22 @@ ALTER TABLE `companies`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
+-- AUTO_INCREMENT for table `jobs`
+--
+ALTER TABLE `jobs`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `jobs_categories`
+--
+ALTER TABLE `jobs_categories`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT for table `listings`
 --
 ALTER TABLE `listings`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `listings_categories`
@@ -401,10 +534,22 @@ ALTER TABLE `user_fcm_tokens`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
+-- AUTO_INCREMENT for table `user_follow_listings`
+--
+ALTER TABLE `user_follow_listings`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
 -- AUTO_INCREMENT for table `user_lost_passwords`
 --
 ALTER TABLE `user_lost_passwords`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT for table `user_opened_jobs`
+--
+ALTER TABLE `user_opened_jobs`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT for table `user_opened_listings`
@@ -416,7 +561,7 @@ ALTER TABLE `user_opened_listings`
 -- AUTO_INCREMENT for table `user_transactions`
 --
 ALTER TABLE `user_transactions`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- AUTO_INCREMENT for table `user_uploaded_files`

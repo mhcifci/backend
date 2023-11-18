@@ -5,6 +5,7 @@ const userTransactions = require("./userTransactions.service");
 const userOpenedListings = require("./userOpenedListings.service");
 const listingIncludeFiles = require("./listingIncludeFiles.service");
 const listingCategory = require("./listingCategories.service");
+const userFollowListings = require("./userFollowListings.service");
 
 // Start Class
 const userService = new user();
@@ -12,10 +13,31 @@ const userTransactionsService = new userTransactions();
 const userOpenedListingsService = new userOpenedListings();
 const listingIncludeFilesService = new listingIncludeFiles();
 const listingCategoryService = new listingCategory();
+const userFollowListingsService = new userFollowListings();
 
 class ListingsService extends BaseService {
   constructor() {
     super(Listing);
+  }
+  async getListingsbyUser(user, page, limit) {
+    try {
+      // Kullanıcı kontrolü
+      if (!user) {
+        throw new Error("User not found.");
+      }
+      const checkUser = await userService.getById(parseInt(user));
+      if (!checkUser) {
+        throw new Error("User not found.");
+      }
+
+      // userFollowListingsService.getAll ile Kullanıcının takip listesi çekilir, burada veri yoksa following: null, is_following varsa following: true olarak döndürülür. Eğer is_following: false ise bu veri dahil edilmez.
+      const listings = await this.getAllWithPagination(page, limit);
+      const followingList = await userFollowListingsService.getUserFollowListings(parseInt(user));
+
+      return listings;
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async getListingDetail(user, listing_id) {
@@ -299,6 +321,15 @@ class ListingsService extends BaseService {
       opened: totalOpened,
       remaining: checkListing.max_apply - totalOpened,
     };
+  }
+
+  async getListingsbyCategory(page, limit, category_id) {
+    const result = await this.getAllWithPagination(page, limit, {
+      category_id: parseInt(category_id),
+      is_active: true,
+      is_deleted: false,
+    });
+    return result;
   }
 }
 

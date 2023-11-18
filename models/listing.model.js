@@ -1,5 +1,6 @@
 const Sequelize = require("sequelize");
 const sequelize = require("../config/database");
+const UserFollowListings = require("./userFollowListings.model");
 
 const Listings = sequelize.define(
   "listings",
