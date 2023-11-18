@@ -24,7 +24,7 @@ class ListingsService extends BaseService {
   }
 
   async getFollowedListings(user_id, page = 1, limit = 10) {
-    const offset = (page - 1) * limit;
+    const offset = (parseInt(page) - 1) * parseInt(limit);
 
     const { count, rows } = await UserFollowListings.findAndCountAll({
       where: {
@@ -36,8 +36,8 @@ class ListingsService extends BaseService {
           model: Listings,
         },
       ],
-      limit,
-      offset,
+      limit: parseInt(limit),
+      offset: parseInt(offset),
       order: [["createdAt", "DESC"]],
     });
 
