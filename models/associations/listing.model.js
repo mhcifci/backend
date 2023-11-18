@@ -1,4 +1,3 @@
-// associations.js
 const UserFollowListings = require("../userFollowListings.model");
 const Listings = require("../listing.model");
 

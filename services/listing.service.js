@@ -46,8 +46,8 @@ class ListingsService extends BaseService {
     if (rows) {
       return {
         data: listings.length > 0 ? listings : [],
-        currentPage: page,
-        currentLimit: limit,
+        currentPage: parseInt(page),
+        currentLimit: parseInt(limit),
         total: count,
         totalPages: Math.ceil(count / limit),
       };
@@ -60,30 +60,24 @@ class ListingsService extends BaseService {
       totalPages: Math.ceil(0 / limit),
     };
   }
-
-  // TODO : Paginate eklenecek
   async getListingsbyUser(user_id, page = 1, limit = 10) {
     const offset = (parseInt(page) - 1) * parseInt(limit);
 
-    const unfollowed = await UserFollowListings.findAll({
-      where: {
-        user_id,
-        is_following: false,
-      },
-      attributes: ["listing_id"],
-    });
-
-    let unfollowedListingsIds = [];
-    if (unfollowed.length > 0) {
-      unfollowedListingsIds = unfollowed.map((u) => u.listing_id);
-    }
+    const unfollowed = await this.getUserUnfollowedListings(user_id);
 
     const { count, rows } = await Listings.findAndCountAll({
       where: {
         id: {
-          [Op.notIn]: unfollowedListingsIds.length > 0 ? unfollowedListingsIds : [0], // 0, geçerli bir listing_id olmadığını temsil eder.
+          [Op.notIn]: unfollowed.length > 0 ? unfollowed : [0],
         },
       },
+      include: [
+        {
+          model: UserFollowListings,
+          attributes: ["is_following"],
+          required: false,
+        },
+      ],
       limit: parseInt(limit),
       offset: parseInt(offset),
     });
@@ -92,8 +86,8 @@ class ListingsService extends BaseService {
       data: rows,
       total: count,
       totalPages: Math.ceil(count / limit),
-      currentPage: page,
-      currentLimit: limit,
+      currentPage: parseInt(page),
+      currentLimit: parseInt(limit),
     };
   }
   async getListingDetail(user, listing_id) {
@@ -152,9 +146,7 @@ class ListingsService extends BaseService {
 
     // Eğer açıılmışsa ilan sahibinin telefon numarası, eposta adresini ve ilan detaylarında eklenen file'ları döndür.
     const listingOwnershipDetail = await userService.getById(parseInt(checkListing.user_id));
-    const listingIncludeFiles = await listingIncludeFilesService.getAllwithCondition({
-      listing_id: checkListing.id,
-    });
+    const listingIncludeFiles = await listingIncludeFilesService.getFileUrls(parseInt(listing_id));
 
     const remainingApply = await this.getRemainingApply(checkUser.id, checkListing.id);
 
@@ -216,7 +208,6 @@ class ListingsService extends BaseService {
       opened: false,
     };
   }
-
   async createListing(user, data) {
     // Önce kullanıcıya bakılır
     if (!user) {
@@ -251,7 +242,6 @@ class ListingsService extends BaseService {
     }
     return created;
   }
-
   /**
    * İlan görüntüleme modülü
    * @param {*} user
@@ -319,7 +309,6 @@ class ListingsService extends BaseService {
     // Burada bilgileri getListingDetail ile döndürüyoruz.
     return await this.getListingDetail(checkUser.id, checkListing.id);
   }
-
   async getRemainingApply(user, listing_id) {
     // Önce kullanıcıya bakılır
     if (!user) {
@@ -378,16 +367,37 @@ class ListingsService extends BaseService {
       remaining: checkListing.max_apply - totalOpened,
     };
   }
+  async getListingsbyCategory(page, limit, category_id, user_id) {
+    const offset = (parseInt(page) - 1) * parseInt(limit);
 
-  async getListingsbyCategory(page, limit, category_id) {
-    const result = await this.getAllWithPagination(page, limit, {
-      category_id: parseInt(category_id),
-      is_active: true,
-      is_deleted: false,
+    const unfollowed = await this.getUserUnfollowedListings(user_id);
+
+    const { count, rows } = await Listings.findAndCountAll({
+      where: {
+        id: {
+          [Op.notIn]: unfollowed.length > 0 ? unfollowed : [0],
+        },
+        category_id: parseInt(category_id),
+      },
+      include: [
+        {
+          model: UserFollowListings,
+          attributes: ["is_following"],
+          required: false,
+        },
+      ],
+      limit: parseInt(limit),
+      offset: parseInt(offset),
     });
-    return result;
-  }
 
+    return {
+      data: rows,
+      total: count,
+      totalPages: Math.ceil(count / limit),
+      currentPage: parseInt(page),
+      currentLimit: parseInt(limit),
+    };
+  }
   // Helper function
   async filterListings(listings) {
     return await listings.filter((listing) => {
@@ -397,6 +407,20 @@ class ListingsService extends BaseService {
 
       return listing.user_follow_listings.some((follow) => follow.is_following);
     });
+  }
+  async getUserUnfollowedListings(user_id) {
+    const unfollowed = await UserFollowListings.findAll({
+      where: {
+        user_id,
+        is_following: false,
+      },
+      attributes: ["listing_id"],
+    });
+    let unfollowedListingsIds = [];
+    if (unfollowed.length > 0) {
+      unfollowedListingsIds = unfollowed.map((u) => u.listing_id);
+    }
+    return unfollowedListingsIds;
   }
 }
 

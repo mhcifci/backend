@@ -8,8 +8,8 @@ exports.checkToken = async (req, res) => {
   try {
     const user = req.user;
     const token = req.body.token;
-    const result = await userFcmTokensService.updateToken(user.id, token);
-    return response.success(res, result);
+    await userFcmTokensService.updateToken(user.id, token);
+    return response.success(res, [], "Token updated successfully");
   } catch (err) {
     console.log(err);
     return response.badRequest(res, err.message);

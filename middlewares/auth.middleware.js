@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const response = require("../interceptors/response.interceptor");
 const User = require("../services/user.service");
+var clc = require("cli-color");
 
 // Start Class
 const userService = new User();
@@ -13,7 +14,19 @@ const authMiddleware = async (req, res, next) => {
     if (!user) {
       throw new Error("User not found.");
     }
-    console.log("Mevcut Kullanıcı ID:" + user.id);
+    console.log(clc.yellow("--------------------------------------------------------------------------------"));
+    console.warn(clc.magenta("Logged Kullanıcı ID => " + user.id));
+    console.warn(clc.magenta("Logged Kullanıcı ID => " + user.id));
+    console.warn(clc.magenta("Logged Kullanıcı ID => " + user.id));
+    console.warn(clc.magenta("Logged Kullanıcı ID => " + user.id));
+    console.warn(clc.magenta("Logged Kullanıcı ID => " + user.id));
+    console.warn(clc.magenta("Logged Kullanıcı ID => " + user.id));
+    console.warn(clc.magenta("Logged Kullanıcı ID => " + user.id));
+    console.warn(clc.magenta("Logged Kullanıcı ID => " + user.id));
+    console.warn(clc.magenta("Logged Kullanıcı ID => " + user.id));
+    console.warn(clc.magenta("Logged Kullanıcı ID => " + user.id));
+    console.log(clc.yellow("--------------------------------------------------------------------------------"));
+
     req.user = user;
     next();
   } catch (err) {

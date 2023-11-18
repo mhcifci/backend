@@ -83,8 +83,9 @@ exports.getListingsByCategory = async (req, res) => {
   try {
     const { id } = req.params;
     const { limit = 10, page = 1 } = req.query;
+    const user = req.user;
 
-    const result = await listingService.getListingsbyCategory(parseInt(page), parseInt(limit), parseInt(id));
+    const result = await listingService.getListingsbyCategory(parseInt(page), parseInt(limit), parseInt(id), parseInt(user.id));
     return response.success(res, result);
   } catch (err) {
     return response.badRequest(res, err.message);
