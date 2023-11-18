@@ -13,6 +13,7 @@ const authMiddleware = async (req, res, next) => {
     if (!user) {
       throw new Error("User not found.");
     }
+    console.log("Mevcut Kullanıcı ID:" + user.id);
     req.user = user;
     next();
   } catch (err) {

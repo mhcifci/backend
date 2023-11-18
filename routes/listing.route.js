@@ -12,7 +12,7 @@ const validate = (req, res, next) => {
   return response.badRequest(res, "Required fields could not be verified.");
 };
 
-const rules = [body("category_id").isInt(), body("description").isLength({ min: 10, max: 1000 }), body("country").isLength({ min: 3, max: 55 })];
+const rules = [body("category_id").isInt(), body("description").isLength({ min: 10, max: 500 }), body("country").isLength({ min: 3, max: 55 })];
 
 router.get("/list", listing.getAll);
 router.get("/categories", listing.getListingCategory);

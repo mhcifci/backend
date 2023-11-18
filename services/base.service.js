@@ -60,7 +60,7 @@ class BaseService {
   async getAllWithPagination(page = 1, limit = 10, condition = {}) {
     try {
       const offset = (parseInt(page) - 1) * parseInt(limit);
-      const totalCount = await this.model.count();
+      // const totalCount = await this.model.count();
       const records = await this.model.findAll({
         limit: parseInt(limit),
         offset: offset,
@@ -72,8 +72,8 @@ class BaseService {
         data: records,
         currentPage: parseInt(page),
         currentLimit: parseInt(limit),
-        total: totalCount,
-        totalPages: Math.ceil(totalCount / parseInt(limit)),
+        total: records.length,
+        totalPages: Math.ceil(records.length / parseInt(limit)),
       };
     } catch (error) {
       throw error;
