@@ -1,3 +1,4 @@
+require("../models/associations/listing.model");
 const Listing = require("../models/listing.model");
 const BaseService = require("./base.service");
 const user = require("./user.service");
@@ -6,6 +7,7 @@ const userOpenedListings = require("./userOpenedListings.service");
 const listingIncludeFiles = require("./listingIncludeFiles.service");
 const listingCategory = require("./listingCategories.service");
 const userFollowListings = require("./userFollowListings.service");
+const UserFollowListings = require("../models/userFollowListings.model");
 
 // Start Class
 const userService = new user();
@@ -19,27 +21,44 @@ class ListingsService extends BaseService {
   constructor() {
     super(Listing);
   }
-  async getListingsbyUser(user, page, limit) {
-    try {
-      // Kullanıcı kontrolü
-      if (!user) {
-        throw new Error("User not found.");
-      }
-      const checkUser = await userService.getById(parseInt(user));
-      if (!checkUser) {
-        throw new Error("User not found.");
+  // async getListingsbyUser(user, page, limit) {
+  //   try {
+  //     // Kullanıcı kontrolü
+  //     if (!user) {
+  //       throw new Error("User not found.");
+  //     }
+  //     const checkUser = await userService.getById(parseInt(user));
+  //     if (!checkUser) {
+  //       throw new Error("User not found.");
+  //     }
+
+  //     // userFollowListingsService.getAll ile Kullanıcının takip listesi çekilir, burada veri yoksa following: null, is_following varsa following: true olarak döndürülür. Eğer is_following: false ise bu veri dahil edilmez.
+  //     const listings = await this.getAllWithPagination(page, limit);
+  //     const followingList = await userFollowListingsService.getUserFollowListings(parseInt(user));
+
+  //     return listings;
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // }
+
+  async filterListings(listings) {
+    return await listings.filter((listing) => {
+      if (listing.user_follow_listings.length === 0) {
+        return true;
       }
 
-      // userFollowListingsService.getAll ile Kullanıcının takip listesi çekilir, burada veri yoksa following: null, is_following varsa following: true olarak döndürülür. Eğer is_following: false ise bu veri dahil edilmez.
-      const listings = await this.getAllWithPagination(page, limit);
-      const followingList = await userFollowListingsService.getUserFollowListings(parseInt(user));
-
-      return listings;
-    } catch (error) {
-      console.log(error);
-    }
+      return listing.user_follow_listings.some((follow) => follow.is_following);
+    });
   }
 
+  async getListingsbyUser() {
+    const listings = await Listing.findAll({
+      include: [UserFollowListings],
+    });
+    let filteredData = this.filterListings(listings);
+    return filteredData;
+  }
   async getListingDetail(user, listing_id) {
     // Önce kullanıcıya bakılır
     if (!user) {
