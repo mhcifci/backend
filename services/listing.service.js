@@ -1,5 +1,5 @@
 require("../models/associations/listing.model");
-const Listing = require("../models/listing.model");
+const Listings = require("../models/listing.model");
 const BaseService = require("./base.service");
 const user = require("./user.service");
 const userTransactions = require("./userTransactions.service");
@@ -8,6 +8,7 @@ const listingIncludeFiles = require("./listingIncludeFiles.service");
 const listingCategory = require("./listingCategories.service");
 const userFollowListings = require("./userFollowListings.service");
 const UserFollowListings = require("../models/userFollowListings.model");
+const { Op } = require("sequelize");
 
 // Start Class
 const userService = new user();
@@ -15,49 +16,85 @@ const userTransactionsService = new userTransactions();
 const userOpenedListingsService = new userOpenedListings();
 const listingIncludeFilesService = new listingIncludeFiles();
 const listingCategoryService = new listingCategory();
-const userFollowListingsService = new userFollowListings();
+// const userFollowListingsService = new userFollowListings();
 
 class ListingsService extends BaseService {
   constructor() {
-    super(Listing);
-  }
-  // async getListingsbyUser(user, page, limit) {
-  //   try {
-  //     // Kullanıcı kontrolü
-  //     if (!user) {
-  //       throw new Error("User not found.");
-  //     }
-  //     const checkUser = await userService.getById(parseInt(user));
-  //     if (!checkUser) {
-  //       throw new Error("User not found.");
-  //     }
-
-  //     // userFollowListingsService.getAll ile Kullanıcının takip listesi çekilir, burada veri yoksa following: null, is_following varsa following: true olarak döndürülür. Eğer is_following: false ise bu veri dahil edilmez.
-  //     const listings = await this.getAllWithPagination(page, limit);
-  //     const followingList = await userFollowListingsService.getUserFollowListings(parseInt(user));
-
-  //     return listings;
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // }
-
-  async filterListings(listings) {
-    return await listings.filter((listing) => {
-      if (listing.user_follow_listings.length === 0) {
-        return true;
-      }
-
-      return listing.user_follow_listings.some((follow) => follow.is_following);
-    });
+    super(Listings);
   }
 
-  async getListingsbyUser() {
-    const listings = await Listing.findAll({
-      include: [UserFollowListings],
+  async getFollowedListings(user_id, page = 1, limit = 10) {
+    const offset = (page - 1) * limit;
+
+    const { count, rows } = await UserFollowListings.findAndCountAll({
+      where: {
+        user_id: user_id,
+        is_following: true,
+      },
+      include: [
+        {
+          model: Listings,
+        },
+      ],
+      limit,
+      offset,
+      order: [["createdAt", "DESC"]],
     });
-    let filteredData = this.filterListings(listings);
-    return filteredData;
+
+    const listings = rows.map((row) => row.dataValues || []);
+
+    if (rows) {
+      return {
+        data: listings.length > 0 ? listings : [],
+        currentPage: page,
+        currentLimit: limit,
+        total: count,
+        totalPages: Math.ceil(count / limit),
+      };
+    }
+    return {
+      data: [],
+      currentPage: page,
+      currentLimit: limit,
+      total: 0,
+      totalPages: Math.ceil(0 / limit),
+    };
+  }
+
+  // TODO : Paginate eklenecek
+  async getListingsbyUser(user_id, page = 1, limit = 10) {
+    const offset = (parseInt(page) - 1) * parseInt(limit);
+
+    const unfollowed = await UserFollowListings.findAll({
+      where: {
+        user_id,
+        is_following: false,
+      },
+      attributes: ["listing_id"],
+    });
+
+    let unfollowedListingsIds = [];
+    if (unfollowed.length > 0) {
+      unfollowedListingsIds = unfollowed.map((u) => u.listing_id);
+    }
+
+    const { count, rows } = await Listings.findAndCountAll({
+      where: {
+        id: {
+          [Op.notIn]: unfollowedListingsIds.length > 0 ? unfollowedListingsIds : [0], // 0, geçerli bir listing_id olmadığını temsil eder.
+        },
+      },
+      limit: parseInt(limit),
+      offset: parseInt(offset),
+    });
+
+    return {
+      data: rows,
+      total: count,
+      totalPages: Math.ceil(count / limit),
+      currentPage: page,
+      currentLimit: limit,
+    };
   }
   async getListingDetail(user, listing_id) {
     // Önce kullanıcıya bakılır
@@ -349,6 +386,17 @@ class ListingsService extends BaseService {
       is_deleted: false,
     });
     return result;
+  }
+
+  // Helper function
+  async filterListings(listings) {
+    return await listings.filter((listing) => {
+      if (listing.user_follow_listings.length === 0) {
+        return true;
+      }
+
+      return listing.user_follow_listings.some((follow) => follow.is_following);
+    });
   }
 }
 

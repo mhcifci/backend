@@ -28,4 +28,7 @@ router.get("/show-information/:id", authMiddleware, listing.showInformation);
 // Create Job
 router.post("/new", authMiddleware, rules, validate, listing.create);
 
+// Followed Listings
+router.get("/followed", authMiddleware, listing.getFollowingListings);
+
 module.exports = router;
