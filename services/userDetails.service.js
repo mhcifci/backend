@@ -1,9 +1,11 @@
 const BaseService = require("./base.service");
 const UserDetails = require("../models/userDetails.model");
 const Upload = require("./upload.service");
+const UserUploadedFiles = require("./userUploadedFiles.service");
 
 // Start Class
 const uploadService = new Upload();
+const UserUploadedFilesService = new UserUploadedFiles();
 
 class UserDetailsService extends BaseService {
   constructor() {
@@ -33,9 +35,7 @@ class UserDetailsService extends BaseService {
     });
 
     if (existingUserDetails) {
-      const image = await uploadService.getById(existingUserDetails.img_id);
-      console.log(image);
-      return image;
+      return await UserUploadedFilesService.getFileUrl(existingUserDetails.img_id);
     } else {
       return null;
     }

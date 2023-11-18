@@ -74,6 +74,9 @@ class ListingsService extends BaseService {
       include: [
         {
           model: UserFollowListings,
+          where: {
+            user_id: user_id,
+          },
           attributes: ["is_following"],
           required: false,
         },

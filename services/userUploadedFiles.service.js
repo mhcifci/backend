@@ -6,6 +6,14 @@ class UserUploadedFilesService extends BaseService {
   constructor() {
     super(userUploadedFiles);
   }
+
+  async getFileUrl(id) {
+    const file = await this.getWithCondition({ id });
+    if (!file) {
+      throw new Error("Dosya bulunamadı.");
+    }
+    return process.env.BUNNY_DOMAIN + file.file_url;
+  }
 }
 
 module.exports = UserUploadedFilesService;
