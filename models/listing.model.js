@@ -22,6 +22,14 @@ const Listings = sequelize.define(
       allowNull: false,
       max: 55,
     },
+    latitude: {
+      type: Sequelize.DOUBLE,
+      allowNull: false,
+    },
+    longitude: {
+      type: Sequelize.DOUBLE,
+      allowNull: false,
+    },
     is_active: {
       type: Sequelize.BOOLEAN,
       allowNull: false,

@@ -12,6 +12,14 @@ const UserDetails = sequelize.define(
       type: Sequelize.INTEGER,
       allowNull: false,
     },
+    preffered_post_code: {
+      type: Sequelize.STRING,
+      allowNull: false,
+    },
+    preffered_max_mile: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
   },
   { timestamps: false, underscored: true, tableName: "user_details" }
 );

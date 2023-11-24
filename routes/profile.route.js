@@ -36,5 +36,6 @@ const updatePasswordRules = [
 router.post("/profile-picture", authMiddleware, MulterUpload.single("file"), profile.changeProfilePicture);
 router.get("/detail", authMiddleware, profile.getProfileInformation);
 router.post("/update-password", authMiddleware, updatePasswordRules, validate, profile.changePassword);
+router.get("/preferences", authMiddleware, profile.getPreferences);
 
 module.exports = router;

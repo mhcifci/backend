@@ -2,21 +2,24 @@ require("../models/associations/listing.model");
 const Listings = require("../models/listing.model");
 const BaseService = require("./base.service");
 const user = require("./user.service");
+const userDetails = require("./userDetails.service");
 const userTransactions = require("./userTransactions.service");
 const userOpenedListings = require("./userOpenedListings.service");
 const listingIncludeFiles = require("./listingIncludeFiles.service");
 const listingCategory = require("./listingCategories.service");
-const userFollowListings = require("./userFollowListings.service");
+const postCodes = require("./postCodes.service");
+
 const UserFollowListings = require("../models/userFollowListings.model");
 const { Op } = require("sequelize");
 
 // Start Class
 const userService = new user();
+const UserDetailsService = new userDetails();
 const userTransactionsService = new userTransactions();
 const userOpenedListingsService = new userOpenedListings();
 const listingIncludeFilesService = new listingIncludeFiles();
 const listingCategoryService = new listingCategory();
-// const userFollowListingsService = new userFollowListings();
+const postCodesService = new postCodes();
 
 class ListingsService extends BaseService {
   constructor() {
@@ -60,8 +63,42 @@ class ListingsService extends BaseService {
       totalPages: Math.ceil(0 / limit),
     };
   }
+
+  async getListingsByDistance(latitude, longitude, distance) {}
+
   async getListingsbyUser(user_id, page = 1, limit = 10) {
     const offset = (parseInt(page) - 1) * parseInt(limit);
+
+    // Kullanıcının tercihlerine bakılır, tercih ettiği post code ve max mile'a göre ilanlar getirilir.
+    const { preffered_post_code, preffered_max_mile } = await UserDetailsService.getUserPreferences(user_id);
+
+    if (preffered_post_code) {
+      const postCodesWithinRadius = await postCodesService.getPostcodesWithinRadius(preffered_post_code, preffered_max_mile || 10);
+      await postCodesWithinRadius.map((postCode) => console.log(postCode));
+      console.log(postCodesWithinRadius.length);
+
+      // const { count, rows } = await Listings.findAndCountAll({
+      //   where: {
+      //     post_code: {
+      //       [Op.in]: postCodes,
+      //     },
+      //     user_id: user_id,
+      //   },
+      //   limit: parseInt(limit),
+      //   offset: parseInt(offset),
+      //   order: [["createdAt", "DESC"]],
+      // });
+
+      // return {
+      //   data: rows,
+      //   total: count,
+      //   totalPages: Math.ceil(count / limit),
+      //   currentPage: parseInt(page),
+      //   currentLimit: parseInt(limit),
+      // };
+    }
+
+    return;
 
     const unfollowed = await this.getUserUnfollowedListings(user_id);
 
@@ -84,6 +121,8 @@ class ListingsService extends BaseService {
       limit: parseInt(limit),
       offset: parseInt(offset),
     });
+
+    // Adamın eğer preferred post code'u varsa buna göre listele yoksa diğer listelemelerle beraber getir.
 
     return {
       data: rows,
