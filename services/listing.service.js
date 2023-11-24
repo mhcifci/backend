@@ -401,6 +401,9 @@ class ListingsService extends BaseService {
       currentLimit: parseInt(limit),
     };
   }
+  // async searchContent(user, content) {
+
+  // }
   // Helper function
   async filterListings(listings) {
     return await listings.filter((listing) => {

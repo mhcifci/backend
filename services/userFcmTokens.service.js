@@ -1,9 +1,11 @@
 const UserFcmTokens = require("../models/userFcmTokens.model");
 const BaseService = require("./base.service");
 const user = require("./user.service");
+const firebaseHelperClass = require("../utils/firebase.helper");
 
 // Start Class
 const userService = new user();
+const firebaseHelper = new firebaseHelperClass();
 class userFcmTokens extends BaseService {
   constructor() {
     super(UserFcmTokens);
@@ -39,6 +41,25 @@ class userFcmTokens extends BaseService {
     } else {
       return "User token updated successfully";
     }
+  }
+
+  // Unregistered user subscribe to topic
+  async subscribeAllowedNotifications(token) {
+    const result = await firebaseHelper.subscribeUserAllowedNotifications(token);
+    if (result.failureCount === 1) {
+      throw new Error(result.errors[0].error.message);
+    }
+    return "Token saved successfully.";
+  }
+
+  // For testing purpose
+  async sendMessagetoUser(title, body, image, token, data = { default: "1" }) {
+    const result = await firebaseHelper.sendNotificationUser(title, body, image, token, data);
+    return result;
+  }
+  async sendMessagetoTopic(title, body, image, topic, data = { default: "1" }) {
+    const result = await firebaseHelper.sendNotificationtoTopic(title, body, image, topic, data);
+    return result;
   }
 }
 

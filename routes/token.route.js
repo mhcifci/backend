@@ -15,5 +15,10 @@ const validate = (req, res, next) => {
 };
 
 router.post("/check", authMiddleware, tokenRules, validate, token.checkToken);
+router.post("/allow-notifications", tokenRules, validate, token.subscribetoAllUsers);
+
+// For testing purposes.
+router.get("/test", token.sendMessagetoUser);
+router.get("/test-topic", token.sendMessagetoTopic);
 
 module.exports = router;
