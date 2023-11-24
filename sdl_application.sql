@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: mysql
--- Generation Time: Nov 18, 2023 at 07:52 PM
+-- Generation Time: Nov 24, 2023 at 09:57 PM
 -- Server version: 8.0.31
 -- PHP Version: 8.0.19
 
@@ -97,6 +97,8 @@ CREATE TABLE `listings` (
   `category_id` int NOT NULL,
   `description` text NOT NULL,
   `country` varchar(55) NOT NULL COMMENT 'Bakılacak',
+  `latitude` double NOT NULL,
+  `longitude` double NOT NULL,
   `is_active` tinyint NOT NULL,
   `max_apply` int NOT NULL,
   `show_fee` int NOT NULL,
@@ -109,10 +111,8 @@ CREATE TABLE `listings` (
 -- Dumping data for table `listings`
 --
 
-INSERT INTO `listings` (`id`, `user_id`, `category_id`, `description`, `country`, `is_active`, `max_apply`, `show_fee`, `is_deleted`, `created_at`, `updated_at`) VALUES
-(3, 15, 1, 'Lorem ipsum set amet dolor', 'RM 177', 1, 3, 8, 0, '2023-11-08 17:14:00', '2023-11-08 17:14:00'),
-(5, 15, 1, 'Lorem ipsum set amet dolor', 'RM 177', 1, 3, 8, 0, '2023-11-08 18:03:03', '2023-11-08 18:03:03'),
-(9, 15, 1, 'Lorem ipsum set amet dolor', 'RM 177', 1, 3, 8, 0, '2023-11-08 18:03:03', '2023-11-08 18:03:03');
+INSERT INTO `listings` (`id`, `user_id`, `category_id`, `description`, `country`, `latitude`, `longitude`, `is_active`, `max_apply`, `show_fee`, `is_deleted`, `created_at`, `updated_at`) VALUES
+(9, 15, 1, 'Lorem ipsum set amet dolor', 'RM 177', 51.7923246977375, 0.629834723775309, 1, 3, 8, 0, '2023-11-08 18:03:03', '2023-11-08 18:03:03');
 
 -- --------------------------------------------------------
 
@@ -161,6 +161,60 @@ INSERT INTO `listings_include_files` (`id`, `listing_id`, `file_id`, `created_at
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `orders`
+--
+
+CREATE TABLE `orders` (
+  `id` int NOT NULL,
+  `user_id` int NOT NULL,
+  `status` enum('PENDING','COMPLETED','CANCELLED') NOT NULL,
+  `created_at` timestamp NOT NULL,
+  `updated_at` timestamp NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `packages`
+--
+
+CREATE TABLE `packages` (
+  `id` int NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
+  `price` decimal(10,2) NOT NULL,
+  `img` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `created_at` timestamp NOT NULL,
+  `updated_at` timestamp NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `packages`
+--
+
+INSERT INTO `packages` (`id`, `title`, `description`, `price`, `img`, `created_at`, `updated_at`) VALUES
+(1, 'Test Credit Package', 'Credit package description', '10.00', NULL, '2023-11-24 21:27:35', '2023-11-24 21:27:35');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `payments`
+--
+
+CREATE TABLE `payments` (
+  `id` int NOT NULL,
+  `order_id` int NOT NULL,
+  `amount` decimal(10,2) NOT NULL,
+  `status` enum('PROCESSED','FAILED','REFUNDED') NOT NULL,
+  `provider_response` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
+  `transaction_id` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NOT NULL,
+  `updated_at` timestamp NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `users`
 --
 
@@ -196,15 +250,17 @@ INSERT INTO `users` (`id`, `name`, `surname`, `phone`, `country_code`, `password
 CREATE TABLE `user_details` (
   `id` int NOT NULL,
   `user_id` int NOT NULL,
-  `img_id` int NOT NULL
+  `img_id` int NOT NULL,
+  `preffered_post_code` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `preffered_max_mile` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `user_details`
 --
 
-INSERT INTO `user_details` (`id`, `user_id`, `img_id`) VALUES
-(1, 15, 22);
+INSERT INTO `user_details` (`id`, `user_id`, `img_id`, `preffered_post_code`, `preffered_max_mile`) VALUES
+(1, 15, 22, 'SW1W 0NY', 50);
 
 -- --------------------------------------------------------
 
@@ -423,6 +479,24 @@ ALTER TABLE `listings_include_files`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `orders`
+--
+ALTER TABLE `orders`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `packages`
+--
+ALTER TABLE `packages`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `payments`
+--
+ALTER TABLE `payments`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
@@ -518,6 +592,24 @@ ALTER TABLE `listings_include_files`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
+-- AUTO_INCREMENT for table `orders`
+--
+ALTER TABLE `orders`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `packages`
+--
+ALTER TABLE `packages`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `payments`
+--
+ALTER TABLE `payments`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
@@ -539,7 +631,7 @@ ALTER TABLE `user_fcm_tokens`
 -- AUTO_INCREMENT for table `user_follow_listings`
 --
 ALTER TABLE `user_follow_listings`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `user_lost_passwords`
