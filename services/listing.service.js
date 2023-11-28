@@ -11,6 +11,7 @@ const postCodes = require("./postCodes.service");
 
 const UserFollowListings = require("../models/userFollowListings.model");
 const { Op } = require("sequelize");
+const sequelize = require("../config/database");
 
 // Start Class
 const userService = new user();
@@ -64,41 +65,87 @@ class ListingsService extends BaseService {
     };
   }
 
-  async getListingsByDistance(latitude, longitude, distance) {}
+  async getListingByPostcodeAndRadius(user_id, spesific_post_code, spesific_max_mile = 10, page = 1, limit = 10) {
+    const offset = (parseInt(page) - 1) * parseInt(limit);
+    const unfollowed = await this.getUserUnfollowedListings(user_id);
+    let whereClause = {
+      id: {
+        [Op.notIn]: unfollowed.length > 0 ? unfollowed : [0],
+      },
+    };
+
+    if (spesific_post_code && spesific_max_mile) {
+      const postcodeDetail = await postCodesService.getLatLongFromPostcode(spesific_post_code);
+      if (!postcodeDetail) throw new Error("Postcode not found.");
+      const radius = spesific_max_mile * 1609.34;
+      whereClause[Op.and] = sequelize.literal(`ST_Distance_Sphere(point(longitude, latitude), point(${postcodeDetail.longitude}, ${postcodeDetail.latitude})) <= ${radius}`);
+    }
+
+    const { count, rows } = await Listings.findAndCountAll({
+      where: whereClause,
+      include: [
+        {
+          model: UserFollowListings,
+          attributes: ["is_following"],
+        },
+      ],
+      limit: parseInt(limit),
+      offset: parseInt(offset),
+    });
+
+    return {
+      data: rows,
+      spesific_max_mile: parseInt(spesific_max_mile),
+      spesific_post_code,
+      total: count,
+      totalPages: Math.ceil(count / limit),
+      currentPage: parseInt(page),
+      currentLimit: parseInt(limit),
+    };
+  }
+
+  async getListingsByPreferences(user_id, page = 1, limit = 10) {
+    const offset = (parseInt(page) - 1) * parseInt(limit);
+    const unfollowed = await this.getUserUnfollowedListings(user_id);
+    let whereClause = {
+      id: {
+        [Op.notIn]: unfollowed.length > 0 ? unfollowed : [0],
+      },
+    };
+
+    const { preffered_post_code, preffered_max_mile } = await UserDetailsService.getUserPreferences(user_id);
+
+    if (preffered_post_code && preffered_max_mile) {
+      const { latitude, longitude } = await postCodesService.getLatLongFromPostcode(preffered_post_code);
+      const radius = preffered_max_mile * 1609.34;
+      whereClause[Op.and] = sequelize.literal(`ST_Distance_Sphere(point(longitude, latitude), point(${longitude}, ${latitude})) <= ${radius}`);
+    }
+
+    const { count, rows } = await Listings.findAndCountAll({
+      where: whereClause,
+      include: [
+        {
+          model: UserFollowListings,
+          attributes: ["is_following"],
+        },
+      ],
+      limit: parseInt(limit),
+      offset: parseInt(offset),
+    });
+
+    return {
+      data: rows,
+      preffered_max_mile,
+      preffered_post_code,
+      total: count,
+      totalPages: Math.ceil(count / limit),
+      currentPage: parseInt(page),
+      currentLimit: parseInt(limit),
+    };
+  }
 
   async getListingsbyUser(user_id, page = 1, limit = 10) {
     const offset = (parseInt(page) - 1) * parseInt(limit);
-
-    // Kullanıcının tercihlerine bakılır, tercih ettiği post code ve max mile'a göre ilanlar getirilir.
-    const { preffered_post_code, preffered_max_mile } = await UserDetailsService.getUserPreferences(user_id);
-
-    if (preffered_post_code) {
-      const postCodesWithinRadius = await postCodesService.getPostcodesWithinRadius(preffered_post_code, preffered_max_mile || 10);
-      await postCodesWithinRadius.map((postCode) => console.log(postCode));
-      console.log(postCodesWithinRadius.length);
-
-      // const { count, rows } = await Listings.findAndCountAll({
-      //   where: {
-      //     post_code: {
-      //       [Op.in]: postCodes,
-      //     },
-      //     user_id: user_id,
-      //   },
-      //   limit: parseInt(limit),
-      //   offset: parseInt(offset),
-      //   order: [["createdAt", "DESC"]],
-      // });
-
-      // return {
-      //   data: rows,
-      //   total: count,
-      //   totalPages: Math.ceil(count / limit),
-      //   currentPage: parseInt(page),
-      //   currentLimit: parseInt(limit),
-      // };
-    }
-
-    return;
 
     const unfollowed = await this.getUserUnfollowedListings(user_id);
 
@@ -440,9 +487,7 @@ class ListingsService extends BaseService {
       currentLimit: parseInt(limit),
     };
   }
-  // async searchContent(user, content) {
 
-  // }
   // Helper function
   async filterListings(listings) {
     return await listings.filter((listing) => {

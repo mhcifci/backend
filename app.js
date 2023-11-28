@@ -30,6 +30,8 @@ app.use("/profile", require("./routes/profile.route"));
 app.use("/transactions", require("./routes/transactions.route"));
 app.use("/jobs", require("./routes/jobs.route"));
 app.use("/packages", require("./routes/packages.route"));
+app.use("/orders", require("./routes/orders.route"));
+app.use("/postcodes", require("./routes/postcodes.route"));
 
 // For Invalid Routes
 app.use((req, res, next) => {

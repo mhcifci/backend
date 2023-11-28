@@ -15,6 +15,10 @@ const validate = (req, res, next) => {
 const rules = [body("category_id").isInt(), body("description").isLength({ min: 10, max: 500 }), body("country").isLength({ min: 3, max: 55 })];
 
 router.get("/list", authMiddleware, listing.getAll);
+// With preffered
+router.get("/list/by-preffered", authMiddleware, listing.getListingsbyPreffered);
+// With spesific
+router.get("/list/by-spesific", authMiddleware, listing.getListingByPostcodeAndRadius);
 // single detail
 router.get("/detail/:id", authMiddleware, listing.get);
 // all categories

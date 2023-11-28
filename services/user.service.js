@@ -79,8 +79,9 @@ class UserService extends BaseService {
       throw new Error("Kullanıcı bulunamadı.");
     }
     const userProfilePicture = await UserDetailsService.getProfilePicture(user);
+    const getUserPreferences = await UserDetailsService.getUserPreferences(parseInt(user.id));
 
-    return { user, userProfilePicture };
+    return { user, userProfilePicture, preffereds: getUserPreferences };
   }
 
   async changePassword(id, old_password, new_password) {

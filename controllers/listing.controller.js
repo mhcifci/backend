@@ -115,6 +115,29 @@ exports.getListingCategory = async (req, res) => {
   }
 };
 
+// Kullanıcının tercihlerine göre ilanları getirir.
+exports.getListingsbyPreffered = async (req, res) => {
+  try {
+    const user = req.user;
+    const { limit = 10, page = 1 } = req.query;
+    const data = await listingService.getListingsByPreferences(user.id, page, limit);
+    return response.success(res, data);
+  } catch (err) {
+    return response.badRequest(res, err.message);
+  }
+};
+
+exports.getListingByPostcodeAndRadius = async (req, res) => {
+  try {
+    const user = req.user;
+    const { postcode, mile = 10, limit = 10, page = 1 } = req.query;
+    const data = await listingService.getListingByPostcodeAndRadius(user.id, postcode, mile, page, limit);
+    return response.success(res, data);
+  } catch (err) {
+    return response.badRequest(res, err.message);
+  }
+};
+
 // İlanı takip eder.
 exports.doFollow = async (req, res) => {
   try {

@@ -9,11 +9,28 @@ class PostCodesService extends BaseService {
     super();
   }
 
-  // CRUD
+  async validatePostcode(postcode) {
+    try {
+      const result = await postCodesIOService.validate(postcode);
+      return result.result;
+    } catch (error) {
+      console.error("An error occurred:", error);
+      return null;
+    }
+  }
+
+  async autoCompletePostcode(text) {
+    try {
+      const result = await postCodesIOService.autocompletePostcode(text);
+      return result.result;
+    } catch (error) {
+      console.error("An error occurred:", error);
+      return null;
+    }
+  }
 
   // Super Logic Helpers
 
-  // TODO ! : DEvam et buradan.
   async getPostcodesWithinRadius(postcode, miles) {
     try {
       // Belirtilen posta kodunun enlem ve boylamını bul
@@ -32,6 +49,17 @@ class PostCodesService extends BaseService {
         });
       });
       return nearbyResults;
+    } catch (error) {
+      console.error("An error occurred:", error);
+      return null;
+    }
+  }
+
+  async getLatLongFromPostcode(postcode) {
+    try {
+      // Belirtilen posta kodunun enlem ve boylamını bul
+      const { result } = await postCodesIOService.lookup(postcode);
+      return result;
     } catch (error) {
       console.error("An error occurred:", error);
       return null;

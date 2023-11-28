@@ -61,7 +61,19 @@ exports.changePassword = async (req, res) => {
 exports.getPreferences = async (req, res) => {
   try {
     const user = req.user;
-    const data = await UserDetailsService.getUserPreferences(user);
+    const data = await UserDetailsService.getUserPreferences(parseInt(user.id));
+    return response.success(res, data);
+  } catch (err) {
+    return response.badRequest(res, err.message);
+  }
+};
+
+exports.updatePreferences = async (req, res) => {
+  try {
+    const user = req.user;
+    const { preffered_post_code, preffered_max_mile } = req.body;
+    console.log(preffered_max_mile, preffered_post_code);
+    const data = await UserDetailsService.updateUserPreffereds(parseInt(user.id), preffered_post_code, preffered_max_mile);
     return response.success(res, data);
   } catch (err) {
     return response.badRequest(res, err.message);

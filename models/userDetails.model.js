@@ -10,15 +10,15 @@ const UserDetails = sequelize.define(
     },
     img_id: {
       type: Sequelize.INTEGER,
-      allowNull: false,
+      allowNull: true,
     },
     preffered_post_code: {
       type: Sequelize.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     preffered_max_mile: {
       type: Sequelize.INTEGER,
-      allowNull: false,
+      allowNull: true,
     },
   },
   { timestamps: false, underscored: true, tableName: "user_details" }

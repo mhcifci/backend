@@ -37,5 +37,6 @@ router.post("/profile-picture", authMiddleware, MulterUpload.single("file"), pro
 router.get("/detail", authMiddleware, profile.getProfileInformation);
 router.post("/update-password", authMiddleware, updatePasswordRules, validate, profile.changePassword);
 router.get("/preferences", authMiddleware, profile.getPreferences);
+router.post("/update-preferences", authMiddleware, profile.updatePreferences);
 
 module.exports = router;
