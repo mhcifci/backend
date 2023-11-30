@@ -1,5 +1,9 @@
 require("../models/associations/listing.model");
+
+const UserFollowListings = require("../models/userFollowListings.model");
 const Listings = require("../models/listing.model");
+const ListingCategories = require("../models/listingCategories.model");
+
 const BaseService = require("./base.service");
 const user = require("./user.service");
 const userDetails = require("./userDetails.service");
@@ -9,7 +13,6 @@ const listingIncludeFiles = require("./listingIncludeFiles.service");
 const listingCategory = require("./listingCategories.service");
 const postCodes = require("./postCodes.service");
 
-const UserFollowListings = require("../models/userFollowListings.model");
 const { Op } = require("sequelize");
 const sequelize = require("../config/database");
 
@@ -62,6 +65,48 @@ class ListingsService extends BaseService {
       currentLimit: limit,
       total: 0,
       totalPages: Math.ceil(0 / limit),
+    };
+  }
+
+  async searchListing(user_id, search, page = 1, limit = 10) {
+    const offset = (parseInt(page) - 1) * parseInt(limit);
+    const unfollowed = await this.getUserUnfollowedListings(user_id);
+    let whereClause = {
+      id: {
+        [Op.notIn]: unfollowed.length > 0 ? unfollowed : [0],
+      },
+      is_active: true,
+      is_deleted: false,
+      [Op.or]: [
+        {
+          description: {
+            [Op.like]: `%${search}%`,
+          },
+        },
+      ],
+    };
+
+    const { count, rows } = await Listings.findAndCountAll({
+      where: whereClause,
+      include: [
+        {
+          model: UserFollowListings,
+          attributes: ["is_following"],
+        },
+        {
+          model: ListingCategories,
+        },
+      ],
+      limit: parseInt(limit),
+      offset: parseInt(offset),
+    });
+
+    return {
+      data: rows,
+      total: count,
+      totalPages: Math.ceil(count / limit),
+      currentPage: parseInt(page),
+      currentLimit: parseInt(limit),
     };
   }
 
@@ -456,6 +501,8 @@ class ListingsService extends BaseService {
       remaining: checkListing.max_apply - totalOpened,
     };
   }
+
+  // Category Operations
   async getListingsbyCategory(page, limit, category_id, user_id) {
     const offset = (parseInt(page) - 1) * parseInt(limit);
 
@@ -481,6 +528,112 @@ class ListingsService extends BaseService {
 
     return {
       data: rows,
+      total: count,
+      totalPages: Math.ceil(count / limit),
+      currentPage: parseInt(page),
+      currentLimit: parseInt(limit),
+    };
+  }
+  async searchListingbyCategory(user_id, category_id, search, page = 1, limit = 10) {
+    if (!category_id) throw new Error("Category not found.");
+
+    const category = await listingCategoryService.getById(parseInt(category_id));
+    if (!category) throw new Error("Category not found.");
+
+    if (!search) throw new Error("Search keyword must be required.");
+    if (search.length < 3) throw new Error("Search keyword must be at least 3 characters.");
+
+    const offset = (parseInt(page) - 1) * parseInt(limit);
+    const unfollowed = await this.getUserUnfollowedListings(user_id);
+    let whereClause = {
+      id: {
+        [Op.notIn]: unfollowed.length > 0 ? unfollowed : [0],
+      },
+      is_active: true,
+      is_deleted: false,
+      category_id: parseInt(category_id),
+      [Op.or]: [
+        {
+          description: {
+            [Op.like]: `%${search}%`,
+          },
+        },
+      ],
+    };
+
+    const { count, rows } = await Listings.findAndCountAll({
+      where: whereClause,
+      include: [
+        {
+          model: UserFollowListings,
+          attributes: ["is_following"],
+        },
+        {
+          model: ListingCategories,
+        },
+      ],
+      limit: parseInt(limit),
+      offset: parseInt(offset),
+    });
+
+    return {
+      data: rows,
+      total: count,
+      totalPages: Math.ceil(count / limit),
+      currentPage: parseInt(page),
+      currentLimit: parseInt(limit),
+    };
+  }
+
+  // Search Listing by Postcode and Radius
+  async searchListingByPostcodeAndRadius(user_id, spesific_post_code, spesific_max_mile = 10, search, page = 1, limit = 10) {
+    if (!spesific_post_code) throw new Error("Postcode must be required.");
+    if (!search) throw new Error("Search keyword must be required.");
+    if (search.length < 3) throw new Error("Search keyword must be at least 3 characters.");
+
+    const offset = (parseInt(page) - 1) * parseInt(limit);
+    const unfollowed = await this.getUserUnfollowedListings(user_id);
+    let whereClause = {
+      id: {
+        [Op.notIn]: unfollowed.length > 0 ? unfollowed : [0],
+      },
+      is_active: true,
+      is_deleted: false,
+      [Op.or]: [
+        {
+          description: {
+            [Op.like]: `%${search}%`,
+          },
+        },
+      ],
+    };
+
+    if (spesific_post_code && spesific_max_mile) {
+      const postcodeDetail = await postCodesService.getLatLongFromPostcode(spesific_post_code);
+      if (!postcodeDetail) throw new Error("Postcode not found.");
+      const radius = spesific_max_mile * 1609.34;
+      whereClause[Op.and] = sequelize.literal(`ST_Distance_Sphere(point(longitude, latitude), point(${postcodeDetail.longitude}, ${postcodeDetail.latitude})) <= ${radius}`);
+    }
+
+    const { count, rows } = await Listings.findAndCountAll({
+      where: whereClause,
+      include: [
+        {
+          model: UserFollowListings,
+          attributes: ["is_following"],
+        },
+        {
+          model: ListingCategories,
+        },
+      ],
+      limit: parseInt(limit),
+      offset: parseInt(offset),
+    });
+
+    return {
+      data: rows,
+      spesific_max_mile: parseInt(spesific_max_mile),
+      spesific_post_code,
       total: count,
       totalPages: Math.ceil(count / limit),
       currentPage: parseInt(page),

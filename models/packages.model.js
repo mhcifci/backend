@@ -17,6 +17,10 @@ const Packages = sequelize.define(
       type: Sequelize.DECIMAL(10, 2),
       allowNull: false,
     },
+    amount: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
     img: {
       type: Sequelize.STRING(255),
       allowNull: true,

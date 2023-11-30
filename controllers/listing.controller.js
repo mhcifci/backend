@@ -138,6 +138,40 @@ exports.getListingByPostcodeAndRadius = async (req, res) => {
   }
 };
 
+exports.searchListings = async (req, res) => {
+  try {
+    const user = req.user;
+    const { keyword, limit = 10, page = 1 } = req.query;
+    const data = await listingService.searchListing(user.id, keyword, page, limit);
+    return response.success(res, data);
+  } catch (err) {
+    return response.badRequest(res, err.message);
+  }
+};
+
+exports.searchListingsbyCategory = async (req, res) => {
+  try {
+    const user = req.user;
+    const { keyword, limit = 10, page = 1 } = req.query;
+    const { category_id } = req.params;
+    const data = await listingService.searchListingbyCategory(user.id, category_id, keyword, page, limit);
+    return response.success(res, data);
+  } catch (err) {
+    return response.badRequest(res, err.message);
+  }
+};
+
+exports.searchListingByPostcodeAndRadius = async (req, res) => {
+  try {
+    const user = req.user;
+    const { keyword, postcode, mile = 10, limit = 10, page = 1 } = req.query;
+    const data = await listingService.searchListingByPostcodeAndRadius(user.id, postcode, mile, keyword, page, limit);
+    return response.success(res, data);
+  } catch (err) {
+    return response.badRequest(res, err.message);
+  }
+};
+
 // İlanı takip eder.
 exports.doFollow = async (req, res) => {
   try {

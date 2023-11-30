@@ -27,10 +27,18 @@ router.get("/categories", authMiddleware, listing.getListingCategories);
 router.get("/category/:id", authMiddleware, listing.getListingCategory);
 // list by category
 router.get("/by-category/:id", authMiddleware, listing.getListingsByCategory);
+
 // Jobs open
 router.get("/show-information/:id", authMiddleware, listing.showInformation);
 // Create Job
 router.post("/new", authMiddleware, rules, validate, listing.create);
+
+// Search
+router.get("/search", authMiddleware, listing.searchListings);
+// Search by category
+router.get("/search/:category_id", authMiddleware, listing.searchListings);
+// With spesific postcode and mile
+router.get("/list/search/by-spesific", authMiddleware, listing.searchListingByPostcodeAndRadius);
 
 // Followed Listings
 router.get("/followed", authMiddleware, listing.getFollowingListings);
