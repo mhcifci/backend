@@ -4,6 +4,12 @@ const Sequelize = require("sequelize");
 
 const environment = process.env.ENVIRONMENT || "development";
 
+console.log(process.env.ENVIRONMENT);
+console.log(process.env.ENVIRONMENT);
+console.log(process.env.ENVIRONMENT);
+console.log(process.env.ENVIRONMENT);
+console.log(process.env.ENVIRONMENT);
+
 const config = {
   development: {
     username: process.env.DEVELOPMENT_MYSQL_USER || "mahmut",
