@@ -3,10 +3,12 @@ const bcrypt = require("bcrypt");
 
 const User = require("../models/user.model");
 const BaseService = require("./base.service");
+const Email = require("./email.service");
 const UserDetails = require("./userDetails.service");
 
 // Start Class
 const UserDetailsService = new UserDetails();
+const EmailService = new Email();
 
 class UserService extends BaseService {
   constructor() {
@@ -36,6 +38,7 @@ class UserService extends BaseService {
       password: hashedPassword,
       email: data.email,
     };
+    await EmailService.sendWelcomeEmail("mhcifci@gmail.com", "Test Email", "Test Email");
     return await this.create(user);
   }
 

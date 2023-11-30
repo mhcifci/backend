@@ -1,10 +1,12 @@
 const response = require("../interceptors/response.interceptor");
 const Auth = require("../services/auth.service");
 const User = require("../services/user.service");
+const Companies = require("../services/companies.service");
 
 // Start Class
 const authService = new Auth();
 const userService = new User();
+const companiesService = new Companies();
 
 exports.loginUser = async (req, res) => {
   try {

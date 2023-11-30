@@ -4,6 +4,10 @@ const UserLostPasswords = require("../models/userLostPasswords.model");
 const BaseService = require("./base.service");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const Email = require("./email.service");
+
+// Start Class
+const EmailService = new Email();
 
 class AuthService extends BaseService {
   constructor() {
@@ -82,9 +86,10 @@ class AuthService extends BaseService {
       is_used: false,
     });
 
-    // TODO: Send email to user
+    await EmailService.sendLostPasswordEmail(existingUser.email, {
+      code: code,
+    });
 
-    // return true;
     return true;
   }
 
