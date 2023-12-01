@@ -27,14 +27,6 @@ exports.loginUser = async (req, res) => {
 exports.createUser = async (req, res) => {
   try {
     const user = await userService.createUser(req.body);
-    if (req.body.is_company) {
-      const company = await companiesService.createCompany({
-        user_id: user.id,
-        company_name: req.body.company_name,
-        company_phone: req.body.company_phone,
-      });
-      return response.success(res, { user: user, company: company });
-    }
 
     return response.success(res, user);
   } catch (err) {
