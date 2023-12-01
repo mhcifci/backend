@@ -38,5 +38,7 @@ router.get("/detail", authMiddleware, profile.getProfileInformation);
 router.post("/update-password", authMiddleware, updatePasswordRules, validate, profile.changePassword);
 router.get("/preferences", authMiddleware, profile.getPreferences);
 router.post("/update-preferences", authMiddleware, profile.updatePreferences);
+router.post("/set-type/:type_of_user", authMiddleware, profile.setUserType);
+router.get("/user-types", authMiddleware, profile.getAllUserTypes);
 
 module.exports = router;

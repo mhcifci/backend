@@ -79,3 +79,23 @@ exports.updatePreferences = async (req, res) => {
     return response.badRequest(res, err.message);
   }
 };
+
+exports.setUserType = async (req, res) => {
+  try {
+    const user = req.user;
+    const { type_of_user } = req.params;
+    const data = await UserDetailsService.setUserType(parseInt(user.id), type_of_user);
+    return response.success(res, data);
+  } catch (err) {
+    return response.badRequest(res, err.message);
+  }
+};
+
+exports.getAllUserTypes = async (req, res) => {
+  try {
+    const data = await UserDetailsService.getUserTypes();
+    return response.success(res, data);
+  } catch (err) {
+    return response.badRequest(res, err.message);
+  }
+};

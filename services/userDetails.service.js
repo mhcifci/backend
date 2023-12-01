@@ -5,10 +5,12 @@ const BaseService = require("./base.service");
 const UserDetails = require("../models/userDetails.model");
 const UserUploadedFiles = require("./userUploadedFiles.service");
 const PostCodes = require("./postCodes.service");
+const UserTypes = require("./userTypes.service");
 
 // Start Class
 const UserUploadedFilesService = new UserUploadedFiles();
 const PostCodesService = new PostCodes();
+const UserTypesService = new UserTypes();
 
 class UserDetailsService extends BaseService {
   constructor() {
@@ -52,6 +54,25 @@ class UserDetailsService extends BaseService {
     });
     console.log(userType);
     return userType;
+  }
+
+  // return all user types
+  async getUserTypes() {
+    return await UserTypesService.getAll();
+  }
+
+  async setUserType(user_id, type_of_user) {
+    const existingUserDetails = await this.getWithCondition({
+      user_id: parseInt(user_id),
+    });
+
+    // check type is valid
+    const checkUserTypes = await UserTypesService.getById(parseInt(type_of_user));
+    if (!checkUserTypes) throw new Error("Invalid user type.");
+
+    return await this.update(existingUserDetails.id, {
+      type_of_user: checkUserTypes.id,
+    });
   }
 
   async updateUserPreffereds(user_id, preffered_post_code, preffered_max_mile) {
