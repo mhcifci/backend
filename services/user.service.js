@@ -83,8 +83,9 @@ class UserService extends BaseService {
     }
     const userProfilePicture = await UserDetailsService.getProfilePicture(user);
     const getUserPreferences = await UserDetailsService.getUserPreferences(parseInt(user.id));
+    const getUserType = await UserDetailsService.getUserType(parseInt(user.id));
 
-    return { user, userProfilePicture, preffereds: getUserPreferences };
+    return { user, userProfilePicture, userType: getUserType.user_type, preffereds: getUserPreferences };
   }
 
   async changePassword(id, old_password, new_password) {

@@ -1,3 +1,6 @@
+require("../models/associations/userTypes.model");
+const UserType = require("../models/userTypes.model");
+
 const BaseService = require("./base.service");
 const UserDetails = require("../models/userDetails.model");
 const UserUploadedFiles = require("./userUploadedFiles.service");
@@ -33,6 +36,22 @@ class UserDetailsService extends BaseService {
         preffered_max_mile: null,
       };
     }
+  }
+
+  async getUserType(user_id) {
+    const userType = await this.model.findOne({
+      where: {
+        user_id: parseInt(user_id),
+      },
+      include: [
+        {
+          model: UserType,
+          attributes: ["id", "title", "description"],
+        },
+      ],
+    });
+    console.log(userType);
+    return userType;
   }
 
   async updateUserPreffereds(user_id, preffered_post_code, preffered_max_mile) {

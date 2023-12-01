@@ -20,6 +20,10 @@ const UserDetails = sequelize.define(
       type: Sequelize.INTEGER,
       allowNull: true,
     },
+    type_of_user: {
+      type: Sequelize.INTEGER,
+      allowNull: true,
+    },
   },
   { timestamps: false, underscored: true, tableName: "user_details" }
 );
