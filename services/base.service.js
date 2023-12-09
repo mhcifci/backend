@@ -22,6 +22,16 @@ class BaseService {
     }
   }
 
+  async getWithExtras(extras = {}) {
+    try {
+      console.log("girdi");
+      const record = await this.model.findOne(extras);
+      return record;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async getAll() {
     try {
       const records = await this.model.findAll();

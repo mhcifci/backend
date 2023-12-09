@@ -38,6 +38,8 @@ class ListingsService extends BaseService {
         user_id: user_id,
         is_following: true,
       },
+      is_active: true,
+      is_deleted: false,
       include: [
         {
           model: Listings,
@@ -117,6 +119,8 @@ class ListingsService extends BaseService {
       id: {
         [Op.notIn]: unfollowed.length > 0 ? unfollowed : [0],
       },
+      is_active: true,
+      is_deleted: false,
     };
 
     if (spesific_post_code && spesific_max_mile) {
@@ -156,6 +160,8 @@ class ListingsService extends BaseService {
       id: {
         [Op.notIn]: unfollowed.length > 0 ? unfollowed : [0],
       },
+      is_active: true,
+      is_deleted: false,
     };
 
     const { preffered_post_code, preffered_max_mile } = await UserDetailsService.getUserPreferences(user_id);
@@ -199,6 +205,8 @@ class ListingsService extends BaseService {
         id: {
           [Op.notIn]: unfollowed.length > 0 ? unfollowed : [0],
         },
+        is_active: true,
+        is_deleted: false,
       },
       include: [
         {
@@ -235,7 +243,13 @@ class ListingsService extends BaseService {
     }
 
     // İlan kontrol edilir var mı yok mu?
-    const checkListing = await this.getById(parseInt(listing_id));
+    const checkListing = await this.getWithExtras({
+      where: {
+        id: parseInt(listing_id),
+        is_active: true,
+        is_deleted: false,
+      },
+    });
     if (!checkListing) {
       throw new Error("Listing not found.");
     }
@@ -357,9 +371,12 @@ class ListingsService extends BaseService {
       throw new Error("Category not found.");
     }
 
-    // Kullanıcı ve data birleştirilir
-    const listingData = { ...data, user_id: user };
-    // İlan oluşturulur.
+    const findLatLang = await postCodesService.getLatLongFromPostcode(data.country);
+    if (!findLatLang) {
+      throw new Error("Country not found.");
+    }
+
+    const listingData = { ...data, user_id: user, country: findLatLang.postcode, latitude: findLatLang.latitude, longitude: findLatLang.longitude };
 
     const created = await this.create(listingData);
 
@@ -512,6 +529,8 @@ class ListingsService extends BaseService {
       where: {
         id: {
           [Op.notIn]: unfollowed.length > 0 ? unfollowed : [0],
+          is_active: true,
+          is_deleted: false,
         },
         category_id: parseInt(category_id),
       },
@@ -520,6 +539,9 @@ class ListingsService extends BaseService {
           model: UserFollowListings,
           attributes: ["is_following"],
           required: false,
+        },
+        {
+          model: ListingCategories,
         },
       ],
       limit: parseInt(limit),
@@ -656,6 +678,8 @@ class ListingsService extends BaseService {
       where: {
         user_id,
         is_following: false,
+        is_active: true,
+        is_deleted: false,
       },
       attributes: ["listing_id"],
     });

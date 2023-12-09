@@ -14,17 +14,44 @@ const validate = (req, res, next) => {
 const rules = [body("category_id").isInt(), body("description").isLength({ min: 10, max: 500 }), body("country").isLength({ min: 3, max: 55 })];
 
 router.get("/list", authMiddleware, jobs.getAll);
+// With preffered
+router.get("/list/by-preffered", authMiddleware, jobs.getJobsbyPreffered);
+// With spesific
+router.get("/list/by-spesific", authMiddleware, jobs.getListingByPostcodeAndRadius);
 // single detail
 router.get("/detail/:id", authMiddleware, jobs.get);
 // all categories
-router.get("/categories", authMiddleware, jobs.getJobsCategories);
+router.get("/categories", authMiddleware, jobs.getListingCategories);
 // single category detail
-router.get("/category/:id", authMiddleware, jobs.getJobsCategory);
+router.get("/category/:id", authMiddleware, jobs.getListingCategory);
 // list by category
-router.get("/by-category/:id", authMiddleware, jobs.getJobsByCategory);
+router.get("/by-category/:id", authMiddleware, jobs.getListingsByCategory);
+
 // Jobs open
 router.get("/show-information/:id", authMiddleware, jobs.showInformation);
 // Create Job
 router.post("/new", authMiddleware, rules, validate, jobs.create);
+
+// Search
+router.get("/search", authMiddleware, jobs.searchListings);
+// Search by category
+router.get("/search/:category_id", authMiddleware, jobs.searchListingsbyCategory);
+// With spesific postcode and mile
+router.get("/list/search/by-spesific", authMiddleware, jobs.searchListingByPostcodeAndRadius);
+
+// Followed Listings
+router.get("/followed", authMiddleware, jobs.getFollowedJobs);
+
+// MARK Follow Listing
+router.get("/follow/:id", authMiddleware, jobs.doFollow);
+// MARK Unfollow Listing
+router.get("/unfollow/:id", authMiddleware, jobs.deleteFollow);
+// MARK Not Interested Listing
+router.get("/not-interested/:id", authMiddleware, jobs.notInterested);
+
+// Qualifications
+router.get("/qualifications", authMiddleware, jobs.getQualifications);
+router.get("/qualifications/categories", authMiddleware, jobs.getQualificationCategories);
+router.get("/qualifications/by-category/:id", authMiddleware, jobs.getQualificationbyCategory);
 
 module.exports = router;
