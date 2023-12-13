@@ -2,11 +2,13 @@ const response = require("../interceptors/response.interceptor");
 const ListingCategories = require("../services/listingCategories.service");
 const Listing = require("../services/listing.service");
 const UserFollowListings = require("../services/userFollowListings.service");
+const ListingDraft = require("../services/listingDraft.service");
 
 // Start Class
 const listingService = new Listing();
 const listingCategoryService = new ListingCategories();
 const userFollowListingsService = new UserFollowListings();
+const listingDraftService = new ListingDraft();
 
 exports.getAll = async (req, res) => {
   try {
@@ -59,6 +61,40 @@ exports.create = async (req, res) => {
   }
 };
 
+exports.createforNotMember = async (req, res) => {
+  try {
+    const result = await listingDraftService.createListing({
+      country: req.body.country,
+      email: req.body.email,
+      country_code: req.body.country_code,
+      phone: req.body.phone,
+      category_id: req.body.category_id,
+      description: req.body.description,
+      country: req.body.country,
+      is_active: false,
+      include_files: req.body.include_files,
+    });
+    return response.success(res, result, "Listing created successfully.");
+  } catch (err) {
+    return response.badRequest(res, err.message);
+  }
+};
+exports.requestNew = async (req, res) => {
+  try {
+    const user = req.user;
+
+    const result = await listingService.createListing(user.id, {
+      category_id: req.body.category_id,
+      description: req.body.description,
+      country: req.body.country,
+      is_active: false,
+      include_files: req.body.include_files,
+    });
+    return response.success(res, result, "Listing created successfully.");
+  } catch (err) {
+    return response.badRequest(res, err.message);
+  }
+};
 // All
 exports.getListingCategories = async (req, res) => {
   try {
