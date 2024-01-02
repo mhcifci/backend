@@ -31,6 +31,14 @@ class ListingDraftService extends BaseService {
       throw new Error("User already exists, please login and try again.");
     }
 
+    const checkListing = await this.getWithCondition({
+      [Op.or]: [{ email: email }, { phone: phone }],
+    });
+
+    if (checkListing) {
+      throw new Error("Listing already exists, please login and try again.");
+    }
+
     // ListingCategoryService ile kategori kontrol edilir.
     const checkCategory = await listingCategoryService.getById(parseInt(data.category_id));
     if (!checkCategory) {

@@ -678,8 +678,6 @@ class ListingsService extends BaseService {
       where: {
         user_id,
         is_following: false,
-        is_active: true,
-        is_deleted: false,
       },
       attributes: ["listing_id"],
     });
