@@ -13,8 +13,22 @@ const config = {
     port: process.env.DEVELOPMENT_MYSQL_PORT || 3306,
     dialect: "mysql",
   },
-  test: {},
-  production: {},
+  test: {
+    username: process.env.TEST_MYSQL_USER || "mahmut",
+    password: process.env.TEST_MYSQL_PASSWORD || "2146422Mahmut",
+    database: process.env.TEST_MYSQL_DATABASE || "sdl_application",
+    host: process.env.TEST_MYSQL_HOST || "localhost",
+    port: process.env.TEST_MYSQL_PORT || 3306,
+    dialect: "mysql",
+  },
+  production: {
+    username: process.env.PRODUCTION_MYSQL_USER || "mahmut",
+    password: process.env.PRODUCTION_MYSQL_PASSWORD || "2146422Mahmut",
+    database: process.env.PRODUCTION_MYSQL_DATABASE || "sdl_application",
+    host: process.env.PRODUCTION_MYSQL_HOST || "localhost",
+    port: process.env.PRODUCTION_MYSQL_PORT || 3306,
+    dialect: "mysql",
+  },
 };
 
 const sequelize = new Sequelize(config[environment]);
