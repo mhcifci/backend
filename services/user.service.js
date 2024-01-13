@@ -5,10 +5,12 @@ const User = require("../models/user.model");
 const BaseService = require("./base.service");
 const Email = require("./email.service");
 const UserDetails = require("./userDetails.service");
+const Auth = require("./auth.service");
 
 // Start Class
 const UserDetailsService = new UserDetails();
 const EmailService = new Email();
+const AuthService = new Auth();
 
 class UserService extends BaseService {
   constructor() {
@@ -39,7 +41,15 @@ class UserService extends BaseService {
       email: data.email,
     };
     await EmailService.sendWelcomeEmail("mhcifci@gmail.com", "Test Email", "Test Email");
-    return await this.create(user);
+    await this.create(user);
+    const auth = await AuthService.loginUser({
+      email: data.email,
+      password: data.password,
+    });
+    return {
+      ...user,
+      token: auth.token,
+    };
   }
 
   async updateUser(id, data) {

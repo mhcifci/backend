@@ -2,6 +2,7 @@ require("../models/associations/listing.model");
 
 const UserFollowListings = require("../models/userFollowListings.model");
 const Listings = require("../models/listing.model");
+const User = require("../models/user.model");
 const ListingCategories = require("../models/listingCategories.model");
 
 const BaseService = require("./base.service");
@@ -43,6 +44,9 @@ class ListingsService extends BaseService {
       include: [
         {
           model: Listings,
+        },
+        {
+          model: User,
         },
       ],
       limit: parseInt(limit),
@@ -98,6 +102,9 @@ class ListingsService extends BaseService {
         {
           model: ListingCategories,
         },
+        {
+          model: User,
+        },
       ],
       limit: parseInt(limit),
       offset: parseInt(offset),
@@ -136,6 +143,9 @@ class ListingsService extends BaseService {
         {
           model: UserFollowListings,
           attributes: ["is_following"],
+        },
+        {
+          model: User,
         },
       ],
       limit: parseInt(limit),
@@ -179,6 +189,9 @@ class ListingsService extends BaseService {
           model: UserFollowListings,
           attributes: ["is_following"],
         },
+        {
+          model: User,
+        },
       ],
       limit: parseInt(limit),
       offset: parseInt(offset),
@@ -216,6 +229,9 @@ class ListingsService extends BaseService {
           },
           attributes: ["is_following"],
           required: false,
+        },
+        {
+          model: User,
         },
       ],
       limit: parseInt(limit),
@@ -529,9 +545,9 @@ class ListingsService extends BaseService {
       where: {
         id: {
           [Op.notIn]: unfollowed.length > 0 ? unfollowed : [0],
-          is_active: true,
-          is_deleted: false,
         },
+        is_active: true,
+        is_deleted: false,
         category_id: parseInt(category_id),
       },
       include: [
@@ -539,6 +555,9 @@ class ListingsService extends BaseService {
           model: UserFollowListings,
           attributes: ["is_following"],
           required: false,
+        },
+        {
+          model: User,
         },
         {
           model: ListingCategories,
@@ -589,6 +608,9 @@ class ListingsService extends BaseService {
         {
           model: UserFollowListings,
           attributes: ["is_following"],
+        },
+        {
+          model: User,
         },
         {
           model: ListingCategories,
@@ -643,6 +665,9 @@ class ListingsService extends BaseService {
         {
           model: UserFollowListings,
           attributes: ["is_following"],
+        },
+        {
+          model: User,
         },
         {
           model: ListingCategories,

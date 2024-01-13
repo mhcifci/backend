@@ -1,3 +1,5 @@
+require("../models/associations/userFollowListings.model");
+
 const BaseService = require("./base.service");
 const userFollowListings = require("../models/userFollowListings.model");
 

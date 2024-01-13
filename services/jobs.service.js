@@ -1,8 +1,10 @@
 require("../models/associations/jobs.model");
 require("../models/associations/jobQualification.model");
+require("../models/associations/userFollowJobs.model");
 
 const UserFollowJobs = require("../models/userFollowJobs.model");
 const Listings = require("../models/listing.model");
+const User = require("../models/user.model");
 const Jobs = require("../models/jobs.model");
 const ListingCategories = require("../models/listingCategories.model");
 const JobHaveQualifications = require("../models/jobHaveQualifications.model");
@@ -52,6 +54,9 @@ class JobsService extends BaseService {
       include: [
         {
           model: Jobs,
+        },
+        {
+          model: User,
         },
       ],
       limit: parseInt(limit),
@@ -107,6 +112,9 @@ class JobsService extends BaseService {
         {
           model: JobsCategories,
         },
+        {
+          model: User,
+        },
       ],
       limit: parseInt(limit),
       offset: parseInt(offset),
@@ -145,6 +153,9 @@ class JobsService extends BaseService {
         {
           model: UserFollowJobs,
           attributes: ["is_following"],
+        },
+        {
+          model: User,
         },
       ],
       limit: parseInt(limit),
@@ -187,6 +198,9 @@ class JobsService extends BaseService {
         {
           model: UserFollowJobs,
           attributes: ["is_following"],
+        },
+        {
+          model: User,
         },
       ],
       limit: parseInt(limit),
@@ -238,6 +252,9 @@ class JobsService extends BaseService {
             },
           ],
         },
+        {
+          model: User,
+        },
       ],
       limit: parseInt(limit),
       offset: parseInt(offset),
@@ -252,7 +269,6 @@ class JobsService extends BaseService {
     };
   }
 
-  // TODO : Buraya ilan detaylarını spesificationları da gelecek.
   async getListingDetail(user, listing_id) {
     // Önce kullanıcıya bakılır
     if (!user) {
@@ -283,6 +299,9 @@ class JobsService extends BaseService {
               model: JobQualifications,
             },
           ],
+        },
+        {
+          model: User,
         },
       ],
     });
@@ -557,9 +576,9 @@ class JobsService extends BaseService {
       where: {
         id: {
           [Op.notIn]: unfollowed.length > 0 ? unfollowed : [0],
-          is_active: true,
-          is_deleted: false,
         },
+        is_active: true,
+        is_deleted: false,
         category_id: parseInt(category_id),
       },
       include: [
@@ -567,6 +586,9 @@ class JobsService extends BaseService {
           model: UserFollowJobs,
           attributes: ["is_following"],
           required: false,
+        },
+        {
+          model: User,
         },
         {
           model: JobsCategories,
@@ -628,6 +650,9 @@ class JobsService extends BaseService {
           attributes: ["is_following"],
         },
         {
+          model: User,
+        },
+        {
           model: JobsCategories,
         },
       ],
@@ -680,6 +705,9 @@ class JobsService extends BaseService {
         {
           model: UserFollowJobs,
           attributes: ["is_following"],
+        },
+        {
+          model: User,
         },
         {
           model: JobsCategories,
