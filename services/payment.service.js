@@ -11,7 +11,7 @@ class PaymentService extends BaseService {
     super(Orders);
   }
 
-  // Tüm siparişleri getir
+  // Sipariş oluştur
   async createPayment(page, limit) {}
 }
 

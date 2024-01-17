@@ -4,6 +4,8 @@ const dotenv = require("dotenv");
 const response = require("./interceptors/response.interceptor");
 dotenv.config();
 
+app.use("/webhook", require("./routes/webhook.route"));
+
 app.use(express.json());
 const APP_PORT = process.env.APP_PORT || 3001;
 
@@ -32,6 +34,10 @@ app.use("/jobs", require("./routes/jobs.route"));
 app.use("/packages", require("./routes/packages.route"));
 app.use("/orders", require("./routes/orders.route"));
 app.use("/postcodes", require("./routes/postcodes.route"));
+
+// Admin routes
+app.use("/admin/auth", require("./routes/admin/auth.route"));
+app.use("/admin/user", require("./routes/admin/user.route"));
 
 // For Invalid Routes
 app.use((req, res, next) => {

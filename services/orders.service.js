@@ -6,6 +6,7 @@ const Packages = require("./packages.service");
 const Orders = require("../models/orders.model");
 const User = require("../models/user.model");
 const crypto = require("crypto");
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 // Start Class
 const PackagesService = new Packages();
@@ -13,6 +14,50 @@ const PackagesService = new Packages();
 class OrdersService extends BaseService {
   constructor() {
     super(Orders);
+  }
+
+  async completeOrder(user_id, id) {
+    if (!user_id) throw new Error("User ID is required");
+    const order = await this.getWithCondition({
+      id: parseInt(id),
+      user_id: parseInt(user_id),
+      status: "PENDING",
+    });
+
+    if (!order) throw new Error("Order not found or completed. Please check again.");
+    const { status, client_secret } = await stripe.paymentIntents.retrieve(order.stripe_id);
+    switch (status) {
+      case "succeeded":
+        throw new Error("Your order is completed, please check again.");
+        break;
+      case "processing":
+        throw new Error("Your order is processing. Please check later.");
+        break;
+    }
+
+    return { order, client_secret };
+  }
+
+  async webhook(sig, requestBody) {
+    let event;
+    try {
+      event = stripe.webhooks.constructEvent(requestBody, sig, "whsec_39dce7651fa48d6198026879bbb74456373b1b3e9b9d2b057fdda91f1fda2617");
+      switch (event.type) {
+        case "payment_intent.succeeded":
+          const paymentIntentSucceeded = event.data.object;
+          console.log(paymentIntentSucceeded);
+
+          // Kullanıcının balancea bakiyeyi ekle
+
+          // Order'ı completed'a çek
+
+          // success dön
+
+          break;
+      }
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   // Tüm siparişleri getir
@@ -96,14 +141,27 @@ class OrdersService extends BaseService {
     // Sipariş oluşturulur.
     const orderKey = await this.generateUniqueKey(25, "order");
 
+    // Orderı oluştur.
     const order = await this.model.create({
       user_id: parseInt(user_id),
-      package_id: parseInt(package_id),
+      package_id: parseInt(packageDetail.id),
       order_key: orderKey,
       status: "PENDING",
     });
 
-    return order;
+    // Stripe ile ödemeyi başlat
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: packageDetail.price * 100,
+      currency: "gbp",
+      description: `Created payment intent for: ${orderKey}`,
+      metadata: { user_id: parseInt(user_id), package_id: parseInt(packageDetail.id) },
+    });
+
+    const data = await this.update(order.id, {
+      stripe_id: paymentIntent.id,
+    });
+
+    return { data, stripe_payment_id: paymentIntent.id, stripe_client_secret: paymentIntent.client_secret };
   }
 
   async cancelOrder(user_id, orderId) {

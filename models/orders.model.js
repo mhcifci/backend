@@ -16,6 +16,10 @@ const Orders = sequelize.define(
       type: Sequelize.INTEGER,
       allowNull: false,
     },
+    stripe_id: {
+      type: Sequelize.STRING,
+      allowNull: true,
+    },
     status: {
       type: Sequelize.ENUM("PENDING", "COMPLETED", "CANCELLED"),
       allowNull: false,

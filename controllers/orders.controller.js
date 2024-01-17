@@ -27,6 +27,29 @@ exports.createNewOrder = async (req, res) => {
   }
 };
 
+exports.webhook = async (req, res) => {
+  try {
+    const sig = req.headers["stripe-signature"];
+    const requestBody = req.body;
+    const result = await OrdersService.webhook(sig, requestBody);
+    return response.success(res, result);
+  } catch (err) {
+    console.log(err);
+    return response.badRequest(res, err.message);
+  }
+};
+
+exports.completeOrder = async (req, res) => {
+  try {
+    const { id } = req.user;
+    const { order_id } = req.params;
+    const result = await OrdersService.completeOrder(id, order_id);
+    return response.success(res, result);
+  } catch (err) {
+    return response.badRequest(res, err.message);
+  }
+};
+
 exports.cancelOrder = async (req, res) => {
   try {
     const { id } = req.user;
