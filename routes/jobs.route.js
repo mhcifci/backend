@@ -13,6 +13,8 @@ const validate = (req, res, next) => {
 };
 const rules = [body("category_id").isInt(), body("description").isLength({ min: 10, max: 500 }), body("country").isLength({ min: 3, max: 55 })];
 
+router.get("/list/public", jobs.getAllPublic);
+
 router.get("/list", authMiddleware, jobs.getAll);
 // With preffered
 router.get("/list/by-preffered", authMiddleware, jobs.getJobsbyPreffered);

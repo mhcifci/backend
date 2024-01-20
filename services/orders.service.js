@@ -3,6 +3,7 @@ const Package = require("../models/packages.model");
 const { Op } = require("sequelize");
 const BaseService = require("./base.service");
 const Packages = require("./packages.service");
+const UserTransactions = require("./userTransactions.service");
 const Orders = require("../models/orders.model");
 const User = require("../models/user.model");
 const crypto = require("crypto");
@@ -10,6 +11,7 @@ const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 // Start Class
 const PackagesService = new Packages();
+const UserTransactionsService = new UserTransactions();
 
 class OrdersService extends BaseService {
   constructor() {
@@ -38,22 +40,45 @@ class OrdersService extends BaseService {
     return { order, client_secret };
   }
 
+  async completePayment(order_id) {
+    return order_id;
+  }
   async webhook(sig, requestBody) {
     let event;
     try {
-      event = stripe.webhooks.constructEvent(requestBody, sig, "whsec_39dce7651fa48d6198026879bbb74456373b1b3e9b9d2b057fdda91f1fda2617");
+      event = stripe.webhooks.constructEvent(requestBody, sig, process.env.STRIPE_SIGN_SECRET);
       switch (event.type) {
         case "payment_intent.succeeded":
           const paymentIntentSucceeded = event.data.object;
           console.log(paymentIntentSucceeded);
 
           // Kullanıcının balancea bakiyeyi ekle
+          // Package bilgisini al.
+          const packageDetail = await PackagesService.getById(parseInt(paymentIntentSucceeded.metadata.package_id));
+          if (!packageDetail) throw new Error("Package not found");
+
+          const creditAmount = packageDetail.amount;
+
+          await UserTransactionsService.updateUserBalance(
+            parseInt(paymentIntentSucceeded.metadata.user_id),
+            creditAmount,
+            `Stripe pay successfull: ${paymentIntentSucceeded.metadata.order_key}, id: ${paymentIntentSucceeded.id}`
+          );
 
           // Order'ı completed'a çek
 
-          // success dön
+          await this.model.update(
+            {
+              status: "COMPLETED",
+            },
+            {
+              where: {
+                stripe_id: paymentIntentSucceeded.id,
+              },
+            }
+          );
 
-          break;
+          return;
       }
     } catch (error) {
       console.log(error);
@@ -153,8 +178,9 @@ class OrdersService extends BaseService {
     const paymentIntent = await stripe.paymentIntents.create({
       amount: packageDetail.price * 100,
       currency: "gbp",
+      off_session: false,
       description: `Created payment intent for: ${orderKey}`,
-      metadata: { user_id: parseInt(user_id), package_id: parseInt(packageDetail.id) },
+      metadata: { user_id: parseInt(user_id), package_id: parseInt(packageDetail.id), order_key: orderKey },
     });
 
     const data = await this.update(order.id, {

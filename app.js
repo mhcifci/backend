@@ -1,8 +1,10 @@
 const express = require("express");
 const app = express();
+const cors = require("cors");
 const dotenv = require("dotenv");
 const response = require("./interceptors/response.interceptor");
 dotenv.config();
+app.use(cors());
 
 app.use("/webhook", require("./routes/webhook.route"));
 

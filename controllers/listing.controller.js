@@ -10,6 +10,18 @@ const listingCategoryService = new ListingCategories();
 const userFollowListingsService = new UserFollowListings();
 const listingDraftService = new ListingDraft();
 
+exports.getAllPublic = async (req, res) => {
+  try {
+    const { limit = 10, page = 1 } = req.query;
+    const result = await listingService.getListingsbyPublic(page, limit, {
+      is_active: true,
+    });
+    return response.success(res, result);
+  } catch (err) {
+    return response.badRequest(res, err.message);
+  }
+};
+
 exports.getAll = async (req, res) => {
   try {
     const user = req.user;

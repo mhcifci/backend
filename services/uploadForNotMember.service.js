@@ -1,6 +1,7 @@
 const UserUploadedFiles = require("../models/userUploadedFiles.model");
 const bunnyHelper = require("../utils/bunny.helper");
 const BaseService = require("./base.service");
+
 class UploadService extends BaseService {
   constructor() {
     super(UserUploadedFiles);

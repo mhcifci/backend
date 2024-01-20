@@ -208,6 +208,45 @@ class ListingsService extends BaseService {
     };
   }
 
+  async getListingsbyPublic(page = 1, limit = 10) {
+    const offset = (parseInt(page) - 1) * parseInt(limit);
+
+    const { count, rows } = await Listings.findAndCountAll({
+      where: {
+        is_active: true,
+        is_deleted: false,
+      },
+      include: [
+        {
+          model: User,
+          attributes: ["id", "name", "surname"],
+        },
+        {
+          model: ListingCategories,
+        },
+      ],
+      limit: parseInt(limit),
+      offset: parseInt(offset),
+    });
+
+    for (let i = 0; i < rows.length; i++) {
+      const element = rows[i];
+      if (element.user && element.user.dataValues) {
+        element.user.dataValues.name = "*".repeat(6) + element.user.dataValues.name.slice(-2);
+        element.user.dataValues.surname = "*".repeat(6) + element.user.dataValues.surname.slice(-2);
+      }
+    }
+
+    // Adamın eğer preferred post code'u varsa buna göre listele yoksa diğer listelemelerle beraber getir.
+
+    return {
+      data: rows,
+      total: count,
+      totalPages: Math.ceil(count / limit),
+      currentPage: parseInt(page),
+      currentLimit: parseInt(limit),
+    };
+  }
   async getListingsbyUser(user_id, page = 1, limit = 10) {
     const offset = (parseInt(page) - 1) * parseInt(limit);
 

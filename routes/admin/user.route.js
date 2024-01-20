@@ -9,6 +9,7 @@ const routeBaseController = require("../../controllers/admin/user.controller");
 
 // Sabit yapılar olacak ki kopyalayabilelim
 router.get("/list", adminMiddleware, routeBaseController.getAll);
+router.get("/search", adminMiddleware, routeBaseController.searchUsers);
 router.get("/detail/:id", adminMiddleware, routeBaseController.getById);
 // router.post("/add", adminMiddleware, routeBaseController.createNewOrder);
 // router.post("/delete", adminMiddleware, routeBaseController.createNewOrder);

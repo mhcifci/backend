@@ -22,3 +22,13 @@ exports.getById = async (req, res) => {
     return response.badRequest(res, err.message);
   }
 };
+
+exports.searchUsers = async (req, res) => {
+  try {
+    const { page = 1, limit = 10, name, surname, email, phone, is_active, startDate, endDate } = req.query;
+    const result = await controllerBaseService.searchUsers(page, limit, name, surname, email, phone, is_active, startDate, endDate);
+    return response.success(res, result);
+  } catch (err) {
+    return response.badRequest(res, err.message);
+  }
+};

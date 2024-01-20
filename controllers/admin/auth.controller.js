@@ -8,7 +8,7 @@ exports.authAdmin = async (req, res) => {
   try {
     const { email, password } = req.body;
     const result = await adminService.authAdmin({
-      email,
+      username: email,
       password,
     });
 

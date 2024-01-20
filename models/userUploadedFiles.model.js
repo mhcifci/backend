@@ -6,7 +6,7 @@ const UserUploadedFiles = sequelize.define(
   {
     user_id: {
       type: Sequelize.INTEGER,
-      allowNull: false,
+      allowNull: true,
     },
     file_url: {
       type: Sequelize.STRING,

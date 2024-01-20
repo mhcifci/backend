@@ -218,6 +218,54 @@ class JobsService extends BaseService {
     };
   }
 
+  async getListingsbyPublic(page = 1, limit = 10) {
+    const offset = (parseInt(page) - 1) * parseInt(limit);
+
+    const { count, rows } = await Jobs.findAndCountAll({
+      where: {
+        is_active: true,
+        is_deleted: false,
+      },
+      include: [
+        {
+          model: User,
+          attributes: ["id", "name", "surname"],
+        },
+        {
+          model: JobsCategories,
+          attributes: ["id", "title"],
+        },
+        {
+          model: JobHaveQualifications,
+          attributes: ["id"],
+          include: [
+            {
+              model: JobQualifications,
+            },
+          ],
+        },
+      ],
+      limit: parseInt(limit),
+      offset: parseInt(offset),
+    });
+
+    for (let i = 0; i < rows.length; i++) {
+      const element = rows[i];
+      if (element.user && element.user.dataValues) {
+        element.user.dataValues.name = "*".repeat(6) + element.user.dataValues.name.slice(-2);
+        element.user.dataValues.surname = "*".repeat(6) + element.user.dataValues.surname.slice(-2);
+      }
+    }
+
+    return {
+      data: rows,
+      total: count,
+      totalPages: Math.ceil(count / limit),
+      currentPage: parseInt(page),
+      currentLimit: parseInt(limit),
+    };
+  }
+
   async getJobsbyUser(user_id, page = 1, limit = 10) {
     const offset = (parseInt(page) - 1) * parseInt(limit);
     const unfollowed = await this.getUserUnfollowedJobs(user_id);

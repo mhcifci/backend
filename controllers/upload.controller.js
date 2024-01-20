@@ -25,3 +25,25 @@ exports.create = async (req, res) => {
     return response.badRequest(res, err.message);
   }
 };
+
+exports.createForNotMember = async (req, res) => {
+  try {
+    if (!req.file) {
+      throw new Error("File is required.");
+    }
+
+    const fileExtension = path.extname(req.file.originalname);
+    let fileName;
+    if (req.user) {
+      fileName = user.id + "_" + uuid.v4() + fileExtension;
+    } else {
+      fileName = "_" + uuid.v4() + fileExtension;
+    }
+    const data = await uploadService.uploadFile("/", req.file.buffer, fileName, null, null);
+
+    return response.success(res, data);
+  } catch (err) {
+    console.log(err);
+    return response.badRequest(res, err.message);
+  }
+};

@@ -31,6 +31,7 @@ exports.webhook = async (req, res) => {
   try {
     const sig = req.headers["stripe-signature"];
     const requestBody = req.body;
+    console.log(requestBody);
     const result = await OrdersService.webhook(sig, requestBody);
     return response.success(res, result);
   } catch (err) {

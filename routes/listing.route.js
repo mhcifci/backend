@@ -22,6 +22,7 @@ const newRequestRules = [
   body("category_id").isInt(),
   body("description").isLength({ min: 10, max: 500 }),
 ];
+router.get("/list/public", listing.getAllPublic);
 
 router.get("/list", authMiddleware, listing.getAll);
 // With preffered
@@ -31,9 +32,9 @@ router.get("/list/by-spesific", authMiddleware, listing.getListingByPostcodeAndR
 // single detail
 router.get("/detail/:id", authMiddleware, listing.get);
 // all categories
-router.get("/categories", authMiddleware, listing.getListingCategories);
+router.get("/categories", listing.getListingCategories);
 // single category detail
-router.get("/category/:id", authMiddleware, listing.getListingCategory);
+router.get("/category/:id", listing.getListingCategory);
 // list by category
 router.get("/by-category/:id", authMiddleware, listing.getListingsByCategory);
 
