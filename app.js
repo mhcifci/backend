@@ -36,6 +36,7 @@ app.use("/jobs", require("./routes/jobs.route"));
 app.use("/packages", require("./routes/packages.route"));
 app.use("/orders", require("./routes/orders.route"));
 app.use("/postcodes", require("./routes/postcodes.route"));
+app.use("/reports", require("./routes/reports.route"));
 
 // Admin routes
 app.use("/admin/auth", require("./routes/admin/auth.route"));
