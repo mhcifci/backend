@@ -97,7 +97,11 @@ class ListingsService extends BaseService {
       include: [
         {
           model: UserFollowListings,
+          where: {
+            user_id: user_id,
+          },
           attributes: ["is_following"],
+          required: false,
         },
         {
           model: ListingCategories,
@@ -646,7 +650,11 @@ class ListingsService extends BaseService {
       include: [
         {
           model: UserFollowListings,
+          where: {
+            user_id: user_id,
+          },
           attributes: ["is_following"],
+          required: false,
         },
         {
           model: User,

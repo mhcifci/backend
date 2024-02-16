@@ -49,7 +49,7 @@ router.post("/request/new", newRequestRules, validate, listing.createforNotMembe
 // Search
 router.get("/search", authMiddleware, listing.searchListings);
 // Search by category
-router.get("/search/:category_id", authMiddleware, listing.searchListings);
+router.get("/search/:category_id", authMiddleware, listing.searchListingsbyCategory);
 // With spesific postcode and mile
 router.get("/list/search/by-spesific", authMiddleware, listing.searchListingByPostcodeAndRadius);
 
