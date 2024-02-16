@@ -124,6 +124,10 @@ class UserDetailsService extends BaseService {
     });
 
     if (existingUserDetails) {
+      if (existingUserDetails.img_id === null) {
+        return null;
+      }
+
       return await UserUploadedFilesService.getFileUrl(existingUserDetails.img_id);
     } else {
       return null;
