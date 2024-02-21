@@ -48,6 +48,7 @@ router.post("/request/new", newRequestRules, validate, listing.createforNotMembe
 
 // Search
 router.get("/search", authMiddleware, listing.searchListings);
+router.get("/search-new", authMiddleware, listing.searchListingsNew);
 // Search by category
 router.get("/search/:category_id", authMiddleware, listing.searchListingsbyCategory);
 // With spesific postcode and mile
@@ -55,6 +56,7 @@ router.get("/list/search/by-spesific", authMiddleware, listing.searchListingByPo
 
 // Followed Listings
 router.get("/followed", authMiddleware, listing.getFollowingListings);
+router.get("/not-interesteds", authMiddleware, listing.getNotInterestedListings);
 
 // MARK Follow Listing
 router.get("/follow/:id", authMiddleware, listing.doFollow);

@@ -48,11 +48,10 @@ class UserDetailsService extends BaseService {
       include: [
         {
           model: UserType,
-          attributes: ["id", "title", "description"],
+          attributes: ["id", "title", "description", "show_menus"],
         },
       ],
     });
-    console.log(userType);
     return userType;
   }
 

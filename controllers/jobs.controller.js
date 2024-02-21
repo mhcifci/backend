@@ -43,6 +43,17 @@ exports.getFollowedJobs = async (req, res) => {
   }
 };
 
+exports.getNotInterestedListings = async (req, res) => {
+  try {
+    const user = req.user;
+    const { limit = 10, page = 1 } = req.query;
+    const result = await jobsService.getNotInterestedListings(user.id, page, limit);
+    return response.success(res, result);
+  } catch (err) {
+    return response.badRequest(res, err.message);
+  }
+};
+
 exports.get = async (req, res) => {
   try {
     const { id } = req.params;
@@ -161,7 +172,16 @@ exports.searchListings = async (req, res) => {
     return response.badRequest(res, err.message);
   }
 };
-
+exports.searchListingsNew = async (req, res) => {
+  try {
+    const user = req.user;
+    const { keyword, category, postcode, mile, limit = 10, page = 1 } = req.query;
+    const data = await jobsService.searchListingNew(user.id, keyword, category, postcode, mile, page, limit);
+    return response.success(res, data);
+  } catch (err) {
+    return response.badRequest(res, err.message);
+  }
+};
 exports.searchListingsbyCategory = async (req, res) => {
   try {
     const user = req.user;

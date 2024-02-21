@@ -12,6 +12,10 @@ const UserTypes = sequelize.define(
       type: Sequelize.STRING,
       allowNull: false,
     },
+    show_menus: {
+      type: Sequelize.STRING,
+      allowNull: true,
+    },
   },
   { timestamps: true, underscored: true, tableName: "user_types" }
 );

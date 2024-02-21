@@ -44,6 +44,16 @@ exports.getFollowingListings = async (req, res) => {
   }
 };
 
+exports.getNotInterestedListings = async (req, res) => {
+  try {
+    const user = req.user;
+    const { limit = 10, page = 1 } = req.query;
+    const result = await listingService.getNotInterestedListings(user.id, page, limit);
+    return response.success(res, result);
+  } catch (err) {
+    return response.badRequest(res, err.message);
+  }
+};
 exports.get = async (req, res) => {
   try {
     const { id } = req.params;
@@ -191,6 +201,16 @@ exports.searchListings = async (req, res) => {
     const user = req.user;
     const { keyword, limit = 10, page = 1 } = req.query;
     const data = await listingService.searchListing(user.id, keyword, page, limit);
+    return response.success(res, data);
+  } catch (err) {
+    return response.badRequest(res, err.message);
+  }
+};
+exports.searchListingsNew = async (req, res) => {
+  try {
+    const user = req.user;
+    const { keyword, category, postcode, mile, limit = 10, page = 1 } = req.query;
+    const data = await listingService.searchListingNew(user.id, keyword, category, postcode, mile, page, limit);
     return response.success(res, data);
   } catch (err) {
     return response.badRequest(res, err.message);

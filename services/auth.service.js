@@ -5,9 +5,11 @@ const BaseService = require("./base.service");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const Email = require("./email.service");
+const UserDetails = require("./userDetails.service");
 
 // Start Class
 const EmailService = new Email();
+const UserDetailsService = new UserDetails();
 
 class AuthService extends BaseService {
   constructor() {
@@ -43,8 +45,11 @@ class AuthService extends BaseService {
       process.env.JWT_SECRET,
       { expiresIn: process.env.LOGIN_SESSION_TIME }
     );
+
+    const userDetails = await UserDetailsService.getUserType(parseInt(existingUser.id));
+
     // return await this.create(user);
-    return { user: existingUser, token: token };
+    return { user: existingUser, token: token, userDetails };
   }
 
   /**

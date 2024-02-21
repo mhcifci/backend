@@ -36,6 +36,7 @@ router.post("/new", authMiddleware, rules, validate, jobs.create);
 
 // Search
 router.get("/search", authMiddleware, jobs.searchListings);
+router.get("/search-new", authMiddleware, jobs.searchListingsNew);
 // Search by category
 router.get("/search/:category_id", authMiddleware, jobs.searchListingsbyCategory);
 // With spesific postcode and mile
@@ -43,6 +44,7 @@ router.get("/list/search/by-spesific", authMiddleware, jobs.searchListingByPostc
 
 // Followed Listings
 router.get("/followed", authMiddleware, jobs.getFollowedJobs);
+router.get("/not-interesteds", authMiddleware, jobs.getNotInterestedListings);
 
 // MARK Follow Listing
 router.get("/follow/:id", authMiddleware, jobs.doFollow);
