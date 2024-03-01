@@ -29,6 +29,7 @@ app.use("/users", require("./routes/user.route"));
 app.use("/auth", require("./routes/auth.route"));
 app.use("/token", require("./routes/token.route"));
 app.use("/listing", require("./routes/listing.route"));
+app.use("/design", require("./routes/design.route"));
 app.use("/upload", require("./routes/upload.route"));
 app.use("/profile", require("./routes/profile.route"));
 app.use("/transactions", require("./routes/transactions.route"));

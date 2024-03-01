@@ -1,3 +1,5 @@
+const JobHaveQualifications = require("../jobHaveQualifications.model");
+const JobQualifications = require("../jobQualifications.model");
 const User = require("../user.model");
 const UserFollowJobs = require("../userFollowJobs.model");
 

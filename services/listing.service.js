@@ -44,9 +44,15 @@ class ListingsService extends BaseService {
       include: [
         {
           model: Listings,
-        },
-        {
-          model: User,
+          include: [
+            {
+              model: ListingCategories,
+            },
+
+            {
+              model: User,
+            },
+          ],
         },
       ],
       limit: parseInt(limit),

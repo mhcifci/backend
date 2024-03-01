@@ -2,6 +2,7 @@ const jobQualificationCategories = require("../jobQualificationCategories.model"
 const jobQualification = require("../jobQualifications.model");
 const JobHaveQualifications = require("../jobHaveQualifications.model");
 const Jobs = require("../jobs.model");
+const userFollowJobs = require("../userFollowJobs.model");
 
 jobQualificationCategories.hasMany(jobQualification, { foreignKey: "category_id" });
 jobQualification.belongsTo(jobQualificationCategories, { foreignKey: "category_id" });
