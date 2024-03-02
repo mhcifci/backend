@@ -112,9 +112,24 @@ class JobsService extends BaseService {
       include: [
         {
           model: Jobs,
-        },
-        {
-          model: User,
+          include: [
+            {
+              model: JobsCategories,
+            },
+            {
+              model: JobHaveQualifications,
+              attributes: ["id"],
+              include: [
+                {
+                  model: JobQualifications,
+                },
+              ],
+            },
+
+            {
+              model: User,
+            },
+          ],
         },
       ],
       limit: parseInt(limit),
@@ -232,6 +247,15 @@ class JobsService extends BaseService {
         },
         {
           model: JobsCategories,
+        },
+        {
+          model: JobHaveQualifications,
+          attributes: ["id"],
+          include: [
+            {
+              model: JobQualifications,
+            },
+          ],
         },
         {
           model: User,

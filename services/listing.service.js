@@ -93,9 +93,14 @@ class ListingsService extends BaseService {
       include: [
         {
           model: Listings,
-        },
-        {
-          model: User,
+          include: [
+            {
+              model: ListingCategories,
+            },
+            {
+              model: User,
+            },
+          ],
         },
       ],
       limit: parseInt(limit),
@@ -422,6 +427,14 @@ class ListingsService extends BaseService {
         is_active: true,
         is_deleted: false,
       },
+      include: [
+        {
+          model: ListingCategories,
+        },
+        {
+          model: User,
+        },
+      ],
     });
     if (!checkListing) {
       throw new Error("Listing not found.");
