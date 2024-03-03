@@ -22,7 +22,7 @@ const ListingDraft = sequelize.define(
     },
     description: {
       type: Sequelize.TEXT,
-      allowNull: false,
+      allowNull: true,
       max: 1000,
     },
     country: {
