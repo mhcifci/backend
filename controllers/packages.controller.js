@@ -1,8 +1,10 @@
 const response = require("../interceptors/response.interceptor");
+const AppleProductsService = require("../services/appleProducts.service");
 const Packages = require("../services/packages.service");
 
 // Start Class
 const packagesService = new Packages();
+const appleProductsService = new AppleProductsService();
 
 exports.getAll = async (req, res) => {
   try {
@@ -18,6 +20,16 @@ exports.get = async (req, res) => {
   try {
     const { id } = req.params;
     const result = await packagesService.getById(id);
+    return response.success(res, result);
+  } catch (err) {
+    console.log(err);
+    return response.badRequest(res, err.message);
+  }
+};
+
+exports.getAllAppleProducts = async (req, res) => {
+  try {
+    const result = await appleProductsService.getAllWithPagination();
     return response.success(res, result);
   } catch (err) {
     console.log(err);

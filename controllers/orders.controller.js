@@ -1,8 +1,12 @@
 const response = require("../interceptors/response.interceptor");
+const AppleOrders = require("../services/appleOrders.service");
+const AppleProducts = require("../services/appleProducts.service");
 const Orders = require("../services/orders.service");
 
 // Start Class
 const OrdersService = new Orders();
+const AppleOrderService = new AppleOrders();
+const AppleProductsService = new AppleProducts();
 
 // get all orders by user
 exports.getAllByUser = async (req, res) => {
@@ -59,6 +63,42 @@ exports.cancelOrder = async (req, res) => {
     const result = await OrdersService.cancelOrder(id, order_id);
     return response.success(res, result);
   } catch (err) {
+    return response.badRequest(res, err.message);
+  }
+};
+
+// Apple
+// get all orders by user
+exports.getAllByUserforApple = async (req, res) => {
+  try {
+    const { id } = req.user;
+    const { limit = 10, page = 1 } = req.query;
+    const result = await AppleOrderService.getAllOrdersByUserApple(id, page, limit);
+    return response.success(res, result);
+  } catch (err) {
+    return response.badRequest(res, err.message);
+  }
+};
+
+exports.createNewOrderApple = async (req, res) => {
+  try {
+    const { id } = req.user;
+    const { product_id } = req.body;
+    const result = await AppleOrderService.createOrder(id, product_id);
+    return response.success(res, result);
+  } catch (err) {
+    return response.badRequest(res, err.message);
+  }
+};
+
+exports.completeOrderForApple = async (req, res) => {
+  try {
+    const { id } = req.user;
+    const { product_id, order_key } = req.body;
+    const result = await AppleOrderService.completeOrder(id, product_id, order_key);
+    return response.success(res, result);
+  } catch (err) {
+    console.log(err);
     return response.badRequest(res, err.message);
   }
 };

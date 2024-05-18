@@ -10,4 +10,8 @@ router.get("/complete-order/:order_id", authMiddleware, orders.completeOrder);
 router.get("/cancel/:order_id", authMiddleware, orders.cancelOrder);
 
 router.post("/stripe-webhook", express.raw({ type: "application/json" }), orders.webhook);
+router.get("/apple/list", authMiddleware, orders.getAllByUserforApple);
+router.post("/apple/new", authMiddleware, orders.createNewOrderApple);
+router.post("/apple/complete-order", authMiddleware, orders.completeOrderForApple);
+
 module.exports = router;
