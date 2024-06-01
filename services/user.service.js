@@ -152,6 +152,21 @@ class UserService extends BaseService {
 
     return updatePassword;
   }
+
+  async deleteAccount(id) {
+    const user = {
+      is_active: 0,
+    };
+    const [updatedRowsCount] = await this.update(user, {
+      where: { id: parseInt(id) },
+    });
+
+    if (updatedRowsCount === 0) {
+      throw new Error("Proccess Failed.");
+    }
+
+    return user;
+  }
 }
 
 module.exports = UserService;

@@ -3,6 +3,7 @@ const router = express.Router();
 const auth = require("../controllers/auth.controller");
 const response = require("../interceptors/response.interceptor");
 const { body, validationResult } = require("express-validator");
+const authMiddleware = require("../middlewares/auth.middleware");
 
 const validate = (req, res, next) => {
   const errors = validationResult(req);
@@ -21,5 +22,6 @@ const userValidationRules = [
 ];
 
 router.post("/", userValidationRules, validate, auth.createUser);
+router.post("/delete-account", authMiddleware, auth.deleteAccount);
 
 module.exports = router;

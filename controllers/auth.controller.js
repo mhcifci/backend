@@ -53,3 +53,13 @@ exports.changeLostPassword = async (req, res) => {
     return response.badRequest(res, err.message);
   }
 };
+
+exports.deleteAccount = async (req, res) => {
+  try {
+    const user = req.user;
+    await userService.deleteAccount(user.id);
+    return response.success(res, [], "Account Deleted.");
+  } catch (err) {
+    return response.badRequest(res, err.message);
+  }
+};
