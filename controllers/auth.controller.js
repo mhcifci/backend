@@ -16,7 +16,7 @@ exports.loginUser = async (req, res) => {
       password,
     });
     if (result.user.is_active != true) {
-      return response.forbidden(res, "Contact our customer services.");
+      return response.badRequest(res, "Account not found.");
     }
     return response.success(res, result);
   } catch (err) {
@@ -57,6 +57,7 @@ exports.changeLostPassword = async (req, res) => {
 exports.deleteAccount = async (req, res) => {
   try {
     const user = req.user;
+
     await userService.deleteAccount(user.id);
     return response.success(res, [], "Account Deleted.");
   } catch (err) {

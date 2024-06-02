@@ -154,18 +154,15 @@ class UserService extends BaseService {
   }
 
   async deleteAccount(id) {
-    const user = {
+    const updatedRowsCount = await this.update(parseInt(id), {
       is_active: 0,
-    };
-    const [updatedRowsCount] = await this.update(user, {
-      where: { id: parseInt(id) },
     });
 
     if (updatedRowsCount === 0) {
       throw new Error("Proccess Failed.");
     }
 
-    return user;
+    return true;
   }
 }
 
