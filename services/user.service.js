@@ -76,8 +76,8 @@ class UserService extends BaseService {
       password: hashedPassword,
       email: data.email,
     };
-    await EmailService.sendWelcomeEmail("mhcifci@gmail.com", "Test Email", "Test Email");
     await this.create(user);
+    await EmailService.sendWelcomeEmail(data.email, "Welcome to SDL Pro!", "");
     const auth = await AuthService.loginUser({
       email: data.email,
       password: data.password,

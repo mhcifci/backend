@@ -91,7 +91,9 @@ class AuthService extends BaseService {
       is_used: false,
     });
 
+    console.log(existingUser.email);
     await EmailService.sendLostPasswordEmail(existingUser.email, {
+      fullname: `${existingUser.name} ${existingUser.surname}`,
       code: code,
     });
 

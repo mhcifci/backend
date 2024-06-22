@@ -16,7 +16,7 @@ class EmailService {
       to: to,
       subject: subject,
       text: text,
-      template: "welcome-email",
+      template: "Welcome Email",
     };
 
     try {
@@ -32,9 +32,30 @@ class EmailService {
       from: this.from,
       to: to,
       subject: `Lost Password - Recovery code: ${variables.code}`,
-      template: "lost-password",
+      template: "lost password email",
       "h:X-Mailgun-Variables": JSON.stringify(variables),
     };
+
+    console.log(JSON.stringify(variables));
+
+    try {
+      const send = await this.client.messages.create(this.domain, messageData);
+      console.log(send);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async sendPurchaseEmail(to, variables) {
+    const messageData = {
+      from: "SDL Pro Payment <payments@delivery.sdl.pro>",
+      to: to,
+      subject: `Your Payment Was Successful! - Order ID: ${variables.order_key}`,
+      template: "Payment Successfull",
+      "h:X-Mailgun-Variables": JSON.stringify(variables),
+    };
+
+    console.log(JSON.stringify(variables));
 
     try {
       const send = await this.client.messages.create(this.domain, messageData);

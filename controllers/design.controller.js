@@ -2,11 +2,12 @@ const response = require("../interceptors/response.interceptor");
 const DesignDraft = require("../services/designDraft.service");
 const DesignCategories = require("../services/designCategories.service");
 const Design = require("../services/design.service");
+const ListingCategories = require("../services/listingCategories.service");
 
 // Start Class
 const designDraftService = new DesignDraft();
 const designService = new Design();
-const designCategoriesService = new DesignCategories();
+const listingCategoryService = new ListingCategories();
 
 exports.create = async (req, res) => {
   try {
@@ -47,7 +48,7 @@ exports.createforNotMember = async (req, res) => {
 exports.getDesignCategories = async (req, res) => {
   try {
     const { limit = 10, page = 1 } = req.query;
-    const result = await designCategoriesService.getAllWithPagination(page, limit);
+    const result = await listingCategoryService.getAllWithPagination(page, limit);
     return response.success(res, result);
   } catch (err) {
     return response.badRequest(res, err.message);

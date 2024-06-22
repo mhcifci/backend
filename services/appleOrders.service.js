@@ -7,10 +7,12 @@ const UserTransactions = require("./userTransactions.service");
 const AppleOrders = require("../models/appleOrders.model");
 const User = require("../models/user.model");
 const crypto = require("crypto");
+const EmailService = require("./email.service");
 
 // Start Class
 const UserTransactionsService = new UserTransactions();
 const AppleProductsService = new AppleProducts();
+const emailService = new EmailService();
 
 class AppleOrderService extends BaseService {
   constructor() {
@@ -47,6 +49,13 @@ class AppleOrderService extends BaseService {
         },
       }
     );
+
+    const existingUser = await User.findByPk(parseInt(user_id));
+    await emailService.sendPurchaseEmail(existingUser.email, {
+      fullname: `${existingUser.name} ${existingUser.surname}`,
+      order_key: order_key,
+      amount: creditAmount,
+    });
 
     return { message: "Your transactions are successfull!" };
   }

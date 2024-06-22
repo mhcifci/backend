@@ -7,11 +7,13 @@ const UserTransactions = require("./userTransactions.service");
 const Orders = require("../models/orders.model");
 const User = require("../models/user.model");
 const crypto = require("crypto");
+const EmailService = require("./email.service");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 // Start Class
 const PackagesService = new Packages();
 const UserTransactionsService = new UserTransactions();
+const emailService = new EmailService();
 
 class OrdersService extends BaseService {
   constructor() {
@@ -77,6 +79,13 @@ class OrdersService extends BaseService {
               },
             }
           );
+
+          const existingUser = await User.findByPk(parseInt(user_id));
+          await emailService.sendPurchaseEmail(existingUser.email, {
+            fullname: `${existingUser.name} ${existingUser.surname}`,
+            order_key: paymentIntentSucceeded.id,
+            amount: creditAmount,
+          });
 
           return;
       }
