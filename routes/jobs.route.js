@@ -1,3 +1,4 @@
+const response = require("../interceptors/response.interceptor");
 const express = require("express");
 const router = express.Router();
 const jobs = require("../controllers/jobs.controller");
@@ -11,7 +12,7 @@ const validate = (req, res, next) => {
   }
   return response.badRequest(res, "Required fields could not be verified.");
 };
-const rules = [body("category_id").isInt(), body("country").isLength({ min: 3, max: 55 })];
+const rules = [body("country").isLength({ min: 3, max: 55 })];
 
 router.get("/list/public", jobs.getAllPublic);
 
