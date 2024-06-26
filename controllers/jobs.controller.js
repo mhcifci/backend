@@ -174,8 +174,8 @@ exports.searchListings = async (req, res) => {
 exports.searchListingsNew = async (req, res) => {
   try {
     const user = req.user;
-    const { keyword, category, postcode, mile, limit = 10, page = 1 } = req.query;
-    const data = await jobsService.searchListingNew(user.id, keyword, category, postcode, mile, page, limit);
+    const { keyword, postcode, mile, limit = 10, page = 1 } = req.query;
+    const data = await jobsService.searchListingNew(user.id, keyword, postcode, mile, page, limit);
     return response.success(res, data);
   } catch (err) {
     return response.badRequest(res, err.message);

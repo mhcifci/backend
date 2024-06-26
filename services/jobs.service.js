@@ -201,77 +201,74 @@ class JobsService extends BaseService {
       currentLimit: parseInt(limit),
     };
   }
-  async searchListingNew(user_id, search = null, category_id = null, spesific_post_code, spesific_max_mile = 50, page = 1, limit = 10) {
-    const offset = (parseInt(page) - 1) * parseInt(limit);
-    const unfollowed = await this.getUserUnfollowedJobs(user_id);
+  async searchListingNew(user_id, search = null, spesific_post_code, spesific_max_mile = 50, page = 1, limit = 10) {
+    try {
+      const offset = (parseInt(page) - 1) * parseInt(limit);
+      const unfollowed = await this.getUserUnfollowedJobs(user_id);
 
-    let whereClause = {
-      id: {
-        [Op.notIn]: unfollowed.length > 0 ? unfollowed : [0],
-      },
-      is_active: true,
-      is_deleted: false,
-    };
-
-    // search parametresi varsa ve bir değere sahipse where koşuluna ekle
-    if (search) {
-      whereClause[Op.or] = [
-        {
-          description: {
-            [Op.like]: `%${search}%`,
-          },
+      let whereClause = {
+        id: {
+          [Op.notIn]: unfollowed.length > 0 ? unfollowed : [0],
         },
-      ];
-    }
+        is_active: true,
+        is_deleted: false,
+      };
 
-    if (category_id) {
-      whereClause["category_id"] = category_id;
-    }
-
-    if (spesific_post_code && spesific_max_mile) {
-      const postcodeDetail = await postCodesService.getLatLongFromPostcode(spesific_post_code);
-      if (!postcodeDetail) throw new Error("Postcode not found.");
-      const radius = spesific_max_mile * 1609.34;
-      whereClause[Op.and] = sequelize.literal(`ST_Distance_Sphere(point(longitude, latitude), point(${postcodeDetail.longitude}, ${postcodeDetail.latitude})) <= ${radius}`);
-    }
-    const { count, rows } = await Jobs.findAndCountAll({
-      where: whereClause,
-      include: [
-        {
-          model: UserFollowJobs,
-          where: {
-            user_id: user_id,
-          },
-          attributes: ["is_following"],
-          required: false,
-        },
-        {
-          model: JobsCategories,
-        },
-        {
-          model: JobHaveQualifications,
-          attributes: ["id"],
-          include: [
-            {
-              model: JobQualifications,
+      // search parametresi varsa ve bir değere sahipse where koşuluna ekle
+      if (search) {
+        whereClause[Op.or] = [
+          {
+            description: {
+              [Op.like]: `%${search}%`,
             },
-          ],
-        },
-        {
-          model: User,
-        },
-      ],
-      limit: parseInt(limit),
-      offset: parseInt(offset),
-    });
+          },
+        ];
+      }
 
-    return {
-      data: rows,
-      total: count,
-      totalPages: Math.ceil(count / limit),
-      currentPage: parseInt(page),
-      currentLimit: parseInt(limit),
-    };
+      if (spesific_post_code && spesific_max_mile) {
+        const postcodeDetail = await postCodesService.getLatLongFromPostcode(spesific_post_code);
+        if (!postcodeDetail) throw new Error("Postcode not found.");
+        const radius = spesific_max_mile * 1609.34;
+        whereClause[Op.and] = sequelize.literal(`ST_Distance_Sphere(point(longitude, latitude), point(${postcodeDetail.longitude}, ${postcodeDetail.latitude})) <= ${radius}`);
+      }
+      const { count, rows } = await Jobs.findAndCountAll({
+        where: whereClause,
+        include: [
+          {
+            model: UserFollowJobs,
+            where: {
+              user_id: user_id,
+            },
+            attributes: ["is_following"],
+            required: false,
+          },
+          {
+            model: JobHaveQualifications,
+            attributes: ["id"],
+            include: [
+              {
+                model: JobQualifications,
+              },
+            ],
+          },
+          {
+            model: User,
+          },
+        ],
+        limit: parseInt(limit),
+        offset: parseInt(offset),
+      });
+
+      return {
+        data: rows,
+        total: count,
+        totalPages: Math.ceil(count / limit),
+        currentPage: parseInt(page),
+        currentLimit: parseInt(limit),
+      };
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async getListingByPostcodeAndRadius(user_id, spesific_post_code, spesific_max_mile = 10, page = 1, limit = 10) {
