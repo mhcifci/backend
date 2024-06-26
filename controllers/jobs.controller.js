@@ -70,7 +70,6 @@ exports.create = async (req, res) => {
   try {
     const user = req.user;
     const result = await jobsService.createListing(user.id, {
-      category_id: req.body.category_id,
       description: req.body.description,
       country: req.body.country,
       is_active: false,

@@ -602,10 +602,6 @@ class JobsService extends BaseService {
     if (!checkUser) {
       throw new Error("User not found.");
     }
-    const checkCategory = await listingCategoryService.getById(parseInt(data.category_id));
-    if (!checkCategory) {
-      throw new Error("Category not found.");
-    }
 
     const findLatLang = await postCodesService.getLatLongFromPostcode(data.country);
     if (!findLatLang) {
