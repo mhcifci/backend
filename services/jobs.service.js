@@ -60,9 +60,6 @@ class JobsService extends BaseService {
               attributes: { exclude: ["password", "email", "is_active", "phone", "country_code", "createdAt", "updatedAt"] },
             },
             {
-              model: JobsCategories,
-            },
-            {
               model: JobHaveQualifications,
               attributes: ["id"],
               include: [
@@ -113,9 +110,6 @@ class JobsService extends BaseService {
         {
           model: Jobs,
           include: [
-            {
-              model: JobsCategories,
-            },
             {
               model: JobHaveQualifications,
               attributes: ["id"],
