@@ -153,7 +153,18 @@ class UserService extends BaseService {
     return updatePassword;
   }
 
-  async deleteAccount(id) {
+  async deleteAccount(id, password) {
+    const user = await this.getById(id);
+    if (!user) {
+      throw new Error("User not found.");
+    }
+
+    const isPasswordMatch = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordMatch) {
+      throw new Error("Password not match.");
+    }
+
     const updatedRowsCount = await this.update(parseInt(id), {
       is_active: 0,
     });

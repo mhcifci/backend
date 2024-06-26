@@ -57,8 +57,9 @@ exports.changeLostPassword = async (req, res) => {
 exports.deleteAccount = async (req, res) => {
   try {
     const user = req.user;
+    const { password } = req.body;
 
-    await userService.deleteAccount(user.id);
+    await userService.deleteAccount(user.id, password);
     return response.success(res, [], "Account Deleted.");
   } catch (err) {
     return response.badRequest(res, err.message);
