@@ -8,10 +8,6 @@ const Jobs = sequelize.define(
       type: Sequelize.INTEGER,
       allowNull: false,
     },
-    category_id: {
-      type: Sequelize.INTEGER,
-      allowNull: false,
-    },
     description: {
       type: Sequelize.TEXT,
       allowNull: false,
