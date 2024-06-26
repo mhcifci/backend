@@ -367,10 +367,7 @@ class JobsService extends BaseService {
           model: User,
           attributes: ["id", "name", "surname"],
         },
-        {
-          model: JobsCategories,
-          attributes: ["id", "title"],
-        },
+
         {
           model: JobHaveQualifications,
           attributes: ["id"],
