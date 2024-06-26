@@ -478,10 +478,6 @@ class JobsService extends BaseService {
       },
       include: [
         {
-          model: JobsCategories,
-          attributes: ["id", "title"],
-        },
-        {
           model: JobHaveQualifications,
           attributes: ["id"],
           include: [
