@@ -16,6 +16,7 @@ class EmailService {
       to: to,
       subject: subject,
       text: text,
+      "h:Reply-To": "info@sdl.pro",
       template: "Welcome Email",
     };
 
@@ -33,6 +34,7 @@ class EmailService {
       to: to,
       subject: `Lost Password - Recovery code: ${variables.code}`,
       template: "lost password email",
+      "h:Reply-To": "info@sdl.pro",
       "h:X-Mailgun-Variables": JSON.stringify(variables),
     };
 
@@ -52,6 +54,7 @@ class EmailService {
       to: to,
       subject: `Your Payment Was Successful! - Order ID: ${variables.order_key}`,
       template: "Payment Successfull",
+      "h:Reply-To": "info@sdl.pro",
       "h:X-Mailgun-Variables": JSON.stringify(variables),
     };
 
