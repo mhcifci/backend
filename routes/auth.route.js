@@ -26,15 +26,15 @@ const changeLostPasswordRules = [
     .withMessage("Code is required"),
   body("new_password")
     .isLength({
-      min: 6,
-      max: 12,
+      min: 8,
+      max: 20,
     })
     .notEmpty()
     .withMessage("New password must be between 6 and 12 characters."),
   body("re_password")
     .isLength({
-      min: 6,
-      max: 12,
+      min: 8,
+      max: 20,
     })
     .notEmpty()
     .withMessage("New password must be between 6 and 12 characters."),

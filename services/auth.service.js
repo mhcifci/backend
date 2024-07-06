@@ -114,6 +114,8 @@ class AuthService extends BaseService {
     const existingCode = await UserLostPasswords.findOne({
       where: {
         user_id: existingUser.id,
+        code: code,
+        is_used: false,
         created_at: {
           [Op.gte]: new Date(new Date() - 60 * 60 * 1000),
         },
