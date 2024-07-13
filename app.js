@@ -9,7 +9,23 @@ app.use(cors());
 app.use("/webhook", require("./routes/webhook.route"));
 
 app.use(express.json());
-const APP_PORT = process.env.APP_PORT || 3001;
+const APP_PORT = process.env.APP_PORT || 3003;
+
+const ACCESS_TOKEN = process.env.MOBILE_TOKEN;
+
+const authenticateToken = (req, res, next) => {
+  const token = req.header('X-App-Token');
+  if (!token) {
+    return response.badRequest(res, "Token is required", 401);
+  }
+  if (token !== ACCESS_TOKEN) {
+    return response.badRequest(res, "Invalid token", 403);
+  }
+  next();
+};
+
+
+app.use(authenticateToken);
 
 // Routes
 app.get("/", (req, res, next) => {
@@ -26,6 +42,7 @@ app.get("/", (req, res, next) => {
 });
 
 // ! TODO buraya middleware eklenecek basit token için app middleware
+
 
 app.use("/users", require("./routes/user.route"));
 app.use("/auth", require("./routes/auth.route"));
