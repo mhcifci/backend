@@ -50,7 +50,6 @@ class JobsService extends BaseService {
         is_following: true,
       },
       is_active: true,
-      is_deleted: false,
       include: [
         {
           model: Jobs,
@@ -105,7 +104,6 @@ class JobsService extends BaseService {
         is_following: false,
       },
       is_active: true,
-      is_deleted: false,
       include: [
         {
           model: Jobs,
@@ -159,7 +157,6 @@ class JobsService extends BaseService {
         [Op.notIn]: unfollowed.length > 0 ? unfollowed : [0],
       },
       is_active: true,
-      is_deleted: false,
       [Op.or]: [
         {
           description: {
@@ -205,7 +202,6 @@ class JobsService extends BaseService {
           [Op.notIn]: unfollowed.length > 0 ? unfollowed : [0],
         },
         is_active: true,
-        is_deleted: false,
       };
 
       // search parametresi varsa ve bir değere sahipse where koşuluna ekle
@@ -219,12 +215,23 @@ class JobsService extends BaseService {
         ];
       }
 
-      if (spesific_post_code && spesific_max_mile) {
-        const postcodeDetail = await postCodesService.getLatLongFromPostcode(spesific_post_code);
-        if (!postcodeDetail) throw new Error("Postcode not found.");
-        const radius = spesific_max_mile * 1609.34;
-        whereClause[Op.and] = sequelize.literal(`ST_Distance_Sphere(point(longitude, latitude), point(${postcodeDetail.longitude}, ${postcodeDetail.latitude})) <= ${radius}`);
-      }
+      
+    if (spesific_post_code) {
+      whereClause[Op.or] = [
+        {
+          country: {
+            [Op.like]: `%${spesific_post_code }%`,
+          },
+        },
+      ];
+    }
+
+      // if (spesific_post_code && spesific_max_mile) {
+      //   const postcodeDetail = await postCodesService.getLatLongFromPostcode(spesific_post_code);
+      //   if (!postcodeDetail) throw new Error("Postcode not found.");
+      //   const radius = spesific_max_mile * 1609.34;
+      //   whereClause[Op.and] = sequelize.literal(`ST_Distance_Sphere(point(longitude, latitude), point(${postcodeDetail.longitude}, ${postcodeDetail.latitude})) <= ${radius}`);
+      // }
       const { count, rows } = await Jobs.findAndCountAll({
         where: whereClause,
         include: [
@@ -273,7 +280,6 @@ class JobsService extends BaseService {
         [Op.notIn]: unfollowed.length > 0 ? unfollowed : [0],
       },
       is_active: true,
-      is_deleted: false,
     };
 
     if (spesific_post_code && spesific_max_mile) {
@@ -317,7 +323,6 @@ class JobsService extends BaseService {
         [Op.notIn]: unfollowed.length > 0 ? unfollowed : [0],
       },
       is_active: true,
-      is_deleted: false,
     };
 
     const { preffered_post_code, preffered_max_mile } = await UserDetailsService.getUserPreferences(user_id);
@@ -360,7 +365,6 @@ class JobsService extends BaseService {
     const { count, rows } = await Jobs.findAndCountAll({
       where: {
         is_active: true,
-        is_deleted: false,
       },
       include: [
         {
@@ -409,7 +413,6 @@ class JobsService extends BaseService {
           [Op.notIn]: unfollowed.length > 0 ? unfollowed : [0],
         },
         is_active: true,
-        is_deleted: false,
       },
       include: [
         {
@@ -465,7 +468,6 @@ class JobsService extends BaseService {
       where: {
         id: parseInt(listing_id),
         is_active: true,
-        is_deleted: false,
       },
       include: [
         {
@@ -751,7 +753,6 @@ class JobsService extends BaseService {
           [Op.notIn]: unfollowed.length > 0 ? unfollowed : [0],
         },
         is_active: true,
-        is_deleted: false,
         category_id: parseInt(category_id),
       },
       include: [
@@ -804,7 +805,6 @@ class JobsService extends BaseService {
         [Op.notIn]: unfollowed.length > 0 ? unfollowed : [0],
       },
       is_active: true,
-      is_deleted: false,
       category_id: parseInt(category_id),
       [Op.or]: [
         {
@@ -855,7 +855,6 @@ class JobsService extends BaseService {
         [Op.notIn]: unfollowed.length > 0 ? unfollowed : [0],
       },
       is_active: true,
-      is_deleted: false,
       [Op.or]: [
         {
           description: {

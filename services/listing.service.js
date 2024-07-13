@@ -40,7 +40,7 @@ class ListingsService extends BaseService {
         is_following: true,
       },
       is_active: true,
-      is_deleted: false,
+
       include: [
         {
           model: Listings,
@@ -89,7 +89,7 @@ class ListingsService extends BaseService {
         is_following: false,
       },
       is_active: true,
-      is_deleted: false,
+
       include: [
         {
           model: Listings,
@@ -136,7 +136,7 @@ class ListingsService extends BaseService {
         [Op.notIn]: unfollowed.length > 0 ? unfollowed : [0],
       },
       is_active: true,
-      is_deleted: false,
+
       [Op.or]: [
         {
           description: {
@@ -185,7 +185,6 @@ class ListingsService extends BaseService {
         [Op.notIn]: unfollowed.length > 0 ? unfollowed : [0],
       },
       is_active: true,
-      is_deleted: false,
     };
 
     // search parametresi varsa ve bir değere sahipse where koşuluna ekle
@@ -199,17 +198,29 @@ class ListingsService extends BaseService {
       ];
     }
 
+    if (spesific_post_code) {
+      whereClause[Op.or] = [
+        {
+          country: {
+            [Op.like]: `%${spesific_post_code }%`,
+          },
+        },
+      ];
+    }
+
     // category_id parametresi varsa ve bir değere sahipse where koşuluna ekle
     if (category_id) {
       whereClause["category_id"] = category_id;
     }
 
-    if (spesific_post_code && spesific_max_mile) {
-      const postcodeDetail = await postCodesService.getLatLongFromPostcode(spesific_post_code);
-      if (!postcodeDetail) throw new Error("Postcode not found.");
-      const radius = spesific_max_mile * 1609.34;
-      whereClause[Op.and] = sequelize.literal(`ST_Distance_Sphere(point(longitude, latitude), point(${postcodeDetail.longitude}, ${postcodeDetail.latitude})) <= ${radius}`);
-    }
+
+    // ! TODO Sonrasında eklenebilir burası silmiyorum.
+    // if (spesific_post_code && spesific_max_mile) {
+    //   const postcodeDetail = await postCodesService.getLatLongFromPostcode(spesific_post_code);
+    //   if (!postcodeDetail) throw new Error("Postcode not found.");
+    //   const radius = spesific_max_mile * 1609.34;
+    //   whereClause[Op.and] = sequelize.literal(`ST_Distance_Sphere(point(longitude, latitude), point(${postcodeDetail.longitude}, ${postcodeDetail.latitude})) <= ${radius}`);
+    // }
 
     const { count, rows } = await Listings.findAndCountAll({
       where: whereClause,
@@ -250,7 +261,6 @@ class ListingsService extends BaseService {
         [Op.notIn]: unfollowed.length > 0 ? unfollowed : [0],
       },
       is_active: true,
-      is_deleted: false,
     };
 
     if (spesific_post_code && spesific_max_mile) {
@@ -294,7 +304,6 @@ class ListingsService extends BaseService {
         [Op.notIn]: unfollowed.length > 0 ? unfollowed : [0],
       },
       is_active: true,
-      is_deleted: false,
     };
 
     const { preffered_post_code, preffered_max_mile } = await UserDetailsService.getUserPreferences(user_id);
@@ -337,8 +346,7 @@ class ListingsService extends BaseService {
     const { count, rows } = await Listings.findAndCountAll({
       where: {
         is_active: true,
-        is_deleted: false,
-      },
+        },
       include: [
         {
           model: User,
@@ -381,8 +389,7 @@ class ListingsService extends BaseService {
           [Op.notIn]: unfollowed.length > 0 ? unfollowed : [0],
         },
         is_active: true,
-        is_deleted: false,
-      },
+        },
       include: [
         {
           model: UserFollowListings,
@@ -425,8 +432,7 @@ class ListingsService extends BaseService {
       where: {
         id: parseInt(listing_id),
         is_active: true,
-        is_deleted: false,
-      },
+        },
       include: [
         {
           model: ListingCategories,
@@ -717,7 +723,6 @@ class ListingsService extends BaseService {
           [Op.notIn]: unfollowed.length > 0 ? unfollowed : [0],
         },
         is_active: true,
-        is_deleted: false,
         category_id: parseInt(category_id),
       },
       include: [
@@ -761,7 +766,7 @@ class ListingsService extends BaseService {
         [Op.notIn]: unfollowed.length > 0 ? unfollowed : [0],
       },
       is_active: true,
-      is_deleted: false,
+
       category_id: parseInt(category_id),
       [Op.or]: [
         {
@@ -816,7 +821,7 @@ class ListingsService extends BaseService {
         [Op.notIn]: unfollowed.length > 0 ? unfollowed : [0],
       },
       is_active: true,
-      is_deleted: false,
+
       [Op.or]: [
         {
           description: {
