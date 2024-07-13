@@ -20,7 +20,7 @@ app.get("/", (req, res, next) => {
       name: "SDL Rest API",
       status: "Running",
     },
-    "SDL Rest API Working",
+    "!Sandbox SDL Rest API Working",
     200
   );
 });
