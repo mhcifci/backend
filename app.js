@@ -25,6 +25,8 @@ app.get("/", (req, res, next) => {
   );
 });
 
+// ! TODO buraya middleware eklenecek basit token için app middleware
+
 app.use("/users", require("./routes/user.route"));
 app.use("/auth", require("./routes/auth.route"));
 app.use("/token", require("./routes/token.route"));
