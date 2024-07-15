@@ -66,6 +66,14 @@ class UserService extends BaseService {
       }
     }
 
+    // User type istenir... selected_user_type ile gelir eğer yoksa hata ver
+    if (!data.selected_user_type) {
+      throw new Error("User type is required.");
+    }
+
+    // User type string gelebilir integere çevir
+    const user_type = parseInt(data.selected_user_type);
+
     const hashedPassword = await bcrypt.hash(data.password, 10);
 
     const user = {
@@ -76,8 +84,10 @@ class UserService extends BaseService {
       password: hashedPassword,
       email: data.email,
     };
-    await this.create(user);
+    const userId = await this.create(user);
     await EmailService.sendWelcomeEmail(data.email, "Welcome to SDL Pro!", "");
+    // Kullanıcı detayları güncellenir type of user ile
+    await UserDetailsService.setUserType(userId.id, user_type);
     const auth = await AuthService.loginUser({
       email: data.email,
       password: data.password,
