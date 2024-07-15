@@ -3,6 +3,7 @@ const app = express();
 const cors = require("cors");
 const dotenv = require("dotenv");
 const response = require("./interceptors/response.interceptor");
+const { changeLostPassword } = require("./controllers/auth.controller");
 dotenv.config();
 app.use(cors());
 
@@ -15,6 +16,7 @@ const ACCESS_TOKEN = process.env.MOBILE_TOKEN;
 
 const authenticateToken = (req, res, next) => {
   const token = req.header('X-App-Token');
+
   if (!token) {
     return response.badRequest(res, "Token is required", 401);
   }
@@ -23,7 +25,6 @@ const authenticateToken = (req, res, next) => {
   }
   next();
 };
-
 
 
 // Routes
@@ -54,6 +55,7 @@ app.use("/packages", authenticateToken, require("./routes/packages.route"));
 app.use("/orders", authenticateToken, require("./routes/orders.route"));
 app.use("/postcodes", authenticateToken, require("./routes/postcodes.route"));
 app.use("/reports", authenticateToken, require("./routes/reports.route"));
+app.use("/sales", authenticateToken, require("./routes/sales.route"));
 
 // Admin routes
 app.use("/admin/auth", require("./routes/admin/auth.route"));
@@ -65,5 +67,5 @@ app.use((req, res, next) => {
 });
 
 app.listen(APP_PORT, () => {
-  console.log(`Server is running on port ${APP_PORT}`);
+  console.log(`Server is running on port http://localhost:${APP_PORT}`);
 });
