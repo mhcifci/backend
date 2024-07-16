@@ -71,7 +71,7 @@ class EmailService {
 
   async sendContactedEmail(to,subject, variables) {
     const messageData = {
-      from: "SDL Pro Payment <payments@delivery.sdl.pro>",
+      from: "SDL Pro Leads Purchase <leads@delivery.sdl.pro>",
       to: to,
       subject: subject,
       template: "purchase leads email",
