@@ -100,3 +100,16 @@ exports.updatePhone = async (req, res) => {
     return response.badRequest(res, err.message);
   }
 };
+
+
+
+exports.updateEmail = async (req, res) => {
+  try {
+    const user = req.user;
+    const { email } = req.body;
+    const data = await UserService.changeEmailAdress(user.id, email);
+    return response.success(res, data, "Email adress updated.");
+  } catch (err) {
+    return response.badRequest(res, err.message);
+  }
+};

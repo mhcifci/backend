@@ -222,6 +222,35 @@ class UserService extends BaseService {
 
     return true;
   }
+
+
+  async changeEmailAdress(id, email) {
+    const user = await this.getById(id);
+    if(!user) {
+      throw new Error("User not found.");
+    }
+
+
+    // Önce bakılır var mı bu email
+    const existingUser = await this.getWithCondition({
+      email: email,
+    });
+
+    if (existingUser) {
+      throw new Error("Email already exists.");
+    }
+
+    const updatedRowsCount = await this.update(parseInt(id), {
+      email: email,
+    });
+
+    if (updatedRowsCount === 0) {
+      throw new Error("Proccess Failed.");
+    }
+
+    return true;
+  }
+
 }
 
 module.exports = UserService;
