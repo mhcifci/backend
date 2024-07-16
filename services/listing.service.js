@@ -16,6 +16,7 @@ const postCodes = require("./postCodes.service");
 
 const { Op } = require("sequelize");
 const sequelize = require("../config/database");
+const EmailService = require("./email.service");
 
 // Start Class
 const userService = new user();
@@ -648,6 +649,22 @@ class ListingsService extends BaseService {
     });
 
     console.log("Görüntülenme kaydı tutuldu.");
+
+    // İlan sahibinin detaylarını getir.
+    const listingOwnershipDetail = await userService.getById(parseInt(checkListing.user_id));
+
+    // İlana ek dosyaları getir
+    const listingIncludeFiles = await listingIncludeFilesService.getFileUrls(parseInt(listing_id));
+
+    const details = {
+      contactEmail: listingOwnershipDetail.email,
+      contactPhone: "+" + listingOwnershipDetail.country_code + listingOwnershipDetail.phone,
+      urls: listingIncludeFiles,
+    };
+
+    // Email gönder
+    const emailService = new EmailService();
+    await emailService.sendContactedEmail(checkUser.email,"Listing view fee has been deducted from your account. Listing ID: " + checkListing.id, details);
 
     // Burada bilgileri getListingDetail ile döndürüyoruz.
     return await this.getListingDetail(checkUser.id, checkListing.id);

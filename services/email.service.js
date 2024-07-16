@@ -68,6 +68,27 @@ class EmailService {
     }
   }
 
+
+  async sendContactedEmail(to,subject, variables) {
+    const messageData = {
+      from: "SDL Pro Payment <payments@delivery.sdl.pro>",
+      to: to,
+      subject: subject,
+      template: "purchase leads email",
+      "h:Reply-To": "info@sdl.pro",
+      "h:X-Mailgun-Variables": JSON.stringify(variables),
+    };
+
+    console.log(JSON.stringify(variables));
+
+    try {
+      const send = await this.client.messages.create(this.domain, messageData);
+      console.log(send);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   async sendTestEmail(to, subject, text) {
     const messageData = {
       from: this.from,
