@@ -76,6 +76,8 @@ class UserService extends BaseService {
 
     const hashedPassword = await bcrypt.hash(data.password, 10);
 
+    data.phone = data.phone.replace(/\s/g, "");
+
     const user = {
       name: data.name,
       surname: data.surname,
@@ -177,6 +179,41 @@ class UserService extends BaseService {
 
     const updatedRowsCount = await this.update(parseInt(id), {
       is_active: 0,
+    });
+
+    if (updatedRowsCount === 0) {
+      throw new Error("Proccess Failed.");
+    }
+
+    return true;
+  }
+
+
+
+
+  async changePhoneNumber(id, phone, country_code) {
+    const user = await this.getById(id);
+    if (!user) {
+      throw new Error("User not found.");
+    }
+
+
+    phone = phone.replace(/\s/g, "");
+    country_code = country_code.replace(/\s/g, "");
+
+
+    // Önce bakılır var mı bu telefon numarası
+    const existingUser = await this.getWithCondition({
+      phone: phone,
+      country_code: country_code,
+    });
+
+    if (existingUser) {
+      throw new Error("Phone number already exists.");
+    }
+    const updatedRowsCount = await this.update(parseInt(id), {
+      phone: phone,
+      country_code: country_code,
     });
 
     if (updatedRowsCount === 0) {

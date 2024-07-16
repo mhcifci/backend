@@ -87,3 +87,16 @@ exports.getAllUserTypes = async (req, res) => {
     return response.badRequest(res, err.message);
   }
 };
+
+
+exports.updatePhone = async (req, res) => {
+  try {
+    const user = req.user;
+    
+    const { phone, country_code } = req.body;
+    const data = await UserService.changePhoneNumber(user.id, phone, country_code);
+    return response.success(res, data, "Phone number updated.");
+  } catch (err) {
+    return response.badRequest(res, err.message);
+  }
+};

@@ -41,4 +41,7 @@ router.post("/update-preferences", authMiddleware, profile.updatePreferences);
 router.post("/set-type/:type_of_user", authMiddleware, profile.setUserType);
 router.get("/user-types", profile.getAllUserTypes);
 
+router.post("/update-phone", authMiddleware, profile.updatePhone);
+
+
 module.exports = router;
