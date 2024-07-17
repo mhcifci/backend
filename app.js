@@ -21,7 +21,7 @@ const authenticateToken = (req, res, next) => {
     return response.badRequest(res, "Token is required", 401);
   }
   if (token !== ACCESS_TOKEN) {
-    return response.badRequest(res, "Invalid token", 403);
+    return response.badRequest(res, "Invalid token", 401);
   }
   next();
 };
