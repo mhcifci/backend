@@ -6,6 +6,10 @@ const authMiddleware = require("../middlewares/auth.middleware");
 router.get("/list", authMiddleware, sales.getAllCategoriesWithItems);
 router.get("/categories", authMiddleware, sales.getAllCategories);
 
-// post ile form almak için route oluştur service aç
+
+
+router.post("/new", authMiddleware, sales.createNewSalesOrder);
+
+
 
 module.exports = router;

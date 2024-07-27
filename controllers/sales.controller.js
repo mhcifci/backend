@@ -27,3 +27,18 @@ exports.getAllCategoriesWithItems = async (req, res) => {
     return response.badRequest(res, err.message);
   }
 }
+
+
+exports.createNewSalesOrder = async (req, res) => {
+  try {
+
+    const user = req.user;
+    const { items_detail, additional_notes } = req.body;
+
+    const result = await SalesServiceService.createSalesOrder(parseInt(user.id), items_detail, additional_notes);
+    return response.success(res, result, "Sales created successfully");
+  } catch (err) {
+    console.log(err);
+    return response.badRequest(res, err.message);
+  }
+}
