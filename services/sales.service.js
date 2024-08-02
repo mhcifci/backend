@@ -52,7 +52,7 @@ class SalesService extends BaseService {
     }
 
    // Sales'da bir sipariş oluşturuyoruz.
-    const sales = await Sales.create({
+    const sales = await Sales.create({ 
       user_id: user,
       additional_notes,
     });
