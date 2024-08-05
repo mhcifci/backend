@@ -1,3 +1,5 @@
+
+const { DataException, AlreadyException } = require('./../exceptions/SaleExceptions');
 const response = require("../interceptors/response.interceptor");
 const SalesService = require("../services/sales.service");
 
@@ -38,7 +40,25 @@ exports.createNewSalesOrder = async (req, res) => {
     const result = await SalesServiceService.createSalesOrder(parseInt(user.id), items_detail, additional_notes);
     return response.success(res, result, "Sales created successfully");
   } catch (err) {
-    console.log(err);
-    return response.badRequest(res, err.message);
+    if (err instanceof DataException) {
+      console.log(err.message);
+      return  res.status(200).json({
+        status: 200,
+        success: false,
+        "message": err.message,
+        data: null,
+      });
+    } else if (err instanceof AlreadyException) {
+      console.log(err.message);
+      return  res.status(200).json({
+        status: 200,
+        success: false,
+        "message": err.message,
+        data: null,
+      });
+    } else {
+
+      return response.badRequest(res, "An unexpected error occurred");
+    }
   }
 }

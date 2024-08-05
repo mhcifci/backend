@@ -1,3 +1,5 @@
+const { DataException, AlreadyException } = require('./../exceptions/SaleExceptions');
+
 require("../models/associations/salesCategories.model");
 
 
@@ -35,12 +37,12 @@ class SalesService extends BaseService {
 
     // items_detail array olmalı
     if (!Array.isArray(items_detail)) {
-      throw new Error("Item ids must be an array");
+      throw new DataException("Item ids must be an array");
     }
 
     // items_detail array'inin içinde en az 1 item olmalı
     if (items_detail.length < 1) {
-      throw new Error("Item ids must be at least 1");
+      throw new DataException("Item ids must be at least 1");
     } 
 
 
@@ -48,7 +50,7 @@ class SalesService extends BaseService {
     const userHasActiveOrder = await this.checkUserHasActiveOrder(user);
 
     if (userHasActiveOrder) {
-      throw new Error("You already have an active order");
+      throw new AlreadyException("You already have an active order");
     }
 
    // Sales'da bir sipariş oluşturuyoruz.
@@ -63,19 +65,19 @@ class SalesService extends BaseService {
 
       // item'da id ve quantity olmalı.
       if (!item.id || !item.quantity) {
-        throw new Error("Item id and quantity are required");
+        throw new DataException("Item id and quantity are required");
       }
 
       // item'ın id'si var mı kontrol ediyoruz.
       const itemExists = await this.checkIfCategoryItemExists(item.id);
 
       if (!itemExists) {
-        throw new Error(`Item with id ${item.id} does not exist`);
+        throw new DataException(`Item with id ${item.id} does not exist`);
       }
 
       // item'ın quantity'si 0'dan büyük olmalı.
       if (item.quantity < 1) {
-        throw new Error("Quantity must be greater than 0");
+        throw new DataException("Quantity must be greater than 0");
       }
 
       // SalesOrderDetails tablosuna item'ı ekliyoruz.
