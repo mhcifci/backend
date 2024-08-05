@@ -173,6 +173,8 @@ exports.searchListings = async (req, res) => {
 };
 exports.searchListingsNew = async (req, res) => {
   try {
+
+    
     const user = req.user;
     const { keyword, postcode, mile, limit = 10, page = 1 } = req.query;
     const data = await jobsService.searchListingNew(user.id, keyword, postcode, mile, page, limit);

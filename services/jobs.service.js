@@ -196,42 +196,77 @@ class JobsService extends BaseService {
     try {
       const offset = (parseInt(page) - 1) * parseInt(limit);
       const unfollowed = await this.getUserUnfollowedJobs(user_id);
-
+  
       let whereClause = {
         id: {
           [Op.notIn]: unfollowed.length > 0 ? unfollowed : [0],
         },
         is_active: true,
       };
-
+  
       // search parametresi varsa ve bir değere sahipse where koşuluna ekle
       if (search) {
+  
+        // Gelen search değerini qualification ve descriptionlarda ara.
+        const qualificationSearch = await JobQualifications.findOne({
+          where: {
+            title: {
+              [Op.like]: `%${search}%`,
+            },
+          },
+        });
+  
+        if (qualificationSearch) {
+          const jobHaveQualifications = await JobHaveQualifications.findAll({
+            where: {
+              qualification_id: qualificationSearch.id,
+            },
+          });
+  
+          if (jobHaveQualifications.length > 0) {
+            const jobIds = jobHaveQualifications.map((item) => item.job_id);
+            whereClause[Op.or] = [
+              {
+                id: {
+                  [Op.in]: jobIds,
+                },
+              },
+              {
+                description: {
+                  [Op.like]: `%${search}%`,
+                },
+              },
+            ];
+          } else {
+            whereClause[Op.or] = [
+              {
+                description: {
+                  [Op.like]: `%${search}%`,
+                },
+              },
+            ];
+          }
+        } else {
+          whereClause[Op.or] = [
+            {
+              description: {
+                [Op.like]: `%${search}%`,
+              },
+            },
+          ];
+        }
+      }
+  
+      if (spesific_post_code) {
         whereClause[Op.or] = [
           {
-            description: {
-              [Op.like]: `%${search}%`,
+            country: {
+              [Op.like]: `%${spesific_post_code}%`,
             },
           },
         ];
       }
-
-      
-    if (spesific_post_code) {
-      whereClause[Op.or] = [
-        {
-          country: {
-            [Op.like]: `%${spesific_post_code }%`,
-          },
-        },
-      ];
-    }
-
-      // if (spesific_post_code && spesific_max_mile) {
-      //   const postcodeDetail = await postCodesService.getLatLongFromPostcode(spesific_post_code);
-      //   if (!postcodeDetail) throw new Error("Postcode not found.");
-      //   const radius = spesific_max_mile * 1609.34;
-      //   whereClause[Op.and] = sequelize.literal(`ST_Distance_Sphere(point(longitude, latitude), point(${postcodeDetail.longitude}, ${postcodeDetail.latitude})) <= ${radius}`);
-      // }
+  
       const { count, rows } = await Jobs.findAndCountAll({
         where: whereClause,
         include: [
@@ -259,7 +294,7 @@ class JobsService extends BaseService {
         limit: parseInt(limit),
         offset: parseInt(offset),
       });
-
+  
       return {
         data: rows,
         total: count,
@@ -271,7 +306,7 @@ class JobsService extends BaseService {
       console.log(error);
     }
   }
-
+  
   async getListingByPostcodeAndRadius(user_id, spesific_post_code, spesific_max_mile = 10, page = 1, limit = 10) {
     const offset = (parseInt(page) - 1) * parseInt(limit);
     const unfollowed = await this.getUserUnfollowedJobs(user_id);
