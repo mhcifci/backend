@@ -2,10 +2,12 @@
 const { DataException, AlreadyException } = require('./../exceptions/SaleExceptions');
 const response = require("../interceptors/response.interceptor");
 const SalesService = require("../services/sales.service");
+const SettingService = require("../services/settings.service");
 
 
 // Start Class
 const SalesServiceService = new SalesService();
+const SettingServiceService = new SettingService();
 
 // End Class
 
@@ -21,7 +23,6 @@ exports.getAllCategories = async (req, res) => {
 
 exports.getAllCategoriesWithItems = async (req, res) => {
   try {
-
     const result = await SalesServiceService.getAllCategoriesWithItems();
     return response.success(res, result);
   } catch (err) {
@@ -29,6 +30,19 @@ exports.getAllCategoriesWithItems = async (req, res) => {
     return response.badRequest(res, err.message);
   }
 }
+
+
+
+exports.getLogoFromSettings = async (req, res) => {
+  try {
+    const result = await SettingServiceService.getSalesLogo();
+    return response.success(res, result);
+  } catch (err) {
+    console.log(err);
+    return response.badRequest(res, err.message);
+  }
+}
+
 
 
 exports.createNewSalesOrder = async (req, res) => {

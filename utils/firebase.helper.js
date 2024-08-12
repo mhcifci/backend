@@ -5,7 +5,7 @@ class firebaseHelper {
   constructor() {
     if (!admin.apps.length) {
       admin.initializeApp({
-        credential: admin.credential.cert(require("../config/sdl-pro-487e5-firebase-adminsdk-ggmd5-f6dce2ff5a.json")),
+        credential: admin.credential.cert(require("../config/sdl-pro-487e5-firebase-adminsdk-ggmd5-96c9f6e144.json")),
       });
     }
   }
