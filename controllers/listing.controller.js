@@ -3,6 +3,7 @@ const ListingCategories = require("../services/listingCategories.service");
 const Listing = require("../services/listing.service");
 const UserFollowListings = require("../services/userFollowListings.service");
 const ListingDraft = require("../services/listingDraft.service");
+const { changeLostPassword } = require("./auth.controller");
 
 // Start Class
 const listingService = new Listing();
@@ -210,6 +211,7 @@ exports.searchListingsNew = async (req, res) => {
   try {
     const user = req.user;
     const { keyword, category, postcode, mile, limit = 10, page = 1 } = req.query;
+
     const data = await listingService.searchListingNew(user.id, keyword, category, postcode, mile, page, limit);
     return response.success(res, data);
   } catch (err) {

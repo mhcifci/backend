@@ -27,7 +27,7 @@ const Jobs = sequelize.define(
       allowNull: false,
     },
     is_active: {
-      type: Sequelize.BOOLEAN,
+      type: Sequelize.TIME,
       allowNull: false,
       defaultValue: false,
     },

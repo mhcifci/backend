@@ -36,7 +36,7 @@ const Listings = sequelize.define(
       defaultValue: false,
     },
     is_deleted: {
-      type: Sequelize.BOOLEAN,
+      type: Sequelize.TIME,
       allowNull: false,
       defaultValue: false,
     },
