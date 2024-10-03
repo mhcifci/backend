@@ -40,5 +40,6 @@ router.get("/preferences", authMiddleware, profile.getPreferences);
 router.post("/update-preferences", authMiddleware, profile.updatePreferences);
 router.post("/set-type/:type_of_user", authMiddleware, profile.setUserType);
 router.get("/user-types", authMiddleware, profile.getAllUserTypes);
+router.post("/set-company-name", authMiddleware, profile.changeCompanyName);
 
 module.exports = router;

@@ -99,3 +99,14 @@ exports.getAllUserTypes = async (req, res) => {
     return response.badRequest(res, err.message);
   }
 };
+
+exports.changeCompanyName = async (req, res) => {
+  try {
+    const user = req.user;
+    const { company_name } = req.body;
+    const data = await UserDetailsService.changeCompanyName(user, company_name);
+    return response.success(res, data);
+  } catch (err) {
+    return response.badRequest(res, err.message);
+  }
+};
