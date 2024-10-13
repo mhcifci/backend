@@ -45,7 +45,11 @@ app.use("/admin/user", require("./routes/admin/user.route"));
 
 // For Invalid Routes
 app.use((req, res, next) => {
-  response.badRequest(res, "Route not found, please review documentation.", 404);
+  response.badRequest(
+    res,
+    "Route not found, please review documentation.",
+    404
+  );
 });
 
 app.listen(APP_PORT, () => {

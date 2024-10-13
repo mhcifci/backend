@@ -17,7 +17,13 @@ exports.changeProfilePicture = async (req, res) => {
 
     const fileExtension = path.extname(req.file.originalname);
     const fileName = user.id + "_" + uuid.v4() + fileExtension;
-    const upload = await uploadService.uploadFile("/", req.file.buffer, fileName, user.id, "Profile picture.");
+    const upload = await uploadService.uploadFile(
+      "/",
+      req.file.buffer,
+      fileName,
+      user.id,
+      "Profile picture."
+    );
     const data = await UserDetailsService.changeProfilePicture(user, upload);
     return response.success(res, data);
   } catch (err) {
@@ -40,7 +46,11 @@ exports.changePassword = async (req, res) => {
   try {
     const user = req.user;
     const { old_password, new_password } = req.body;
-    const data = await UserService.changePassword(user.id, old_password, new_password);
+    const data = await UserService.changePassword(
+      user.id,
+      old_password,
+      new_password
+    );
     return response.success(res, data, "Password changed successfully.");
   } catch (err) {
     return response.badRequest(res, err.message);
@@ -51,7 +61,11 @@ exports.changePassword = async (req, res) => {
   try {
     const user = req.user;
     const { old_password, new_password } = req.body;
-    const data = await UserService.changePassword(user.id, old_password, new_password);
+    const data = await UserService.changePassword(
+      user.id,
+      old_password,
+      new_password
+    );
     return response.success(res, data, "Password changed successfully.");
   } catch (err) {
     return response.badRequest(res, err.message);
@@ -73,7 +87,11 @@ exports.updatePreferences = async (req, res) => {
     const user = req.user;
     const { preffered_post_code, preffered_max_mile } = req.body;
     console.log(preffered_max_mile, preffered_post_code);
-    const data = await UserDetailsService.updateUserPreffereds(parseInt(user.id), preffered_post_code, preffered_max_mile);
+    const data = await UserDetailsService.updateUserPreffereds(
+      parseInt(user.id),
+      preffered_post_code,
+      preffered_max_mile
+    );
     return response.success(res, data);
   } catch (err) {
     return response.badRequest(res, err.message);
@@ -84,7 +102,10 @@ exports.setUserType = async (req, res) => {
   try {
     const user = req.user;
     const { type_of_user } = req.params;
-    const data = await UserDetailsService.setUserType(parseInt(user.id), type_of_user);
+    const data = await UserDetailsService.setUserType(
+      parseInt(user.id),
+      type_of_user
+    );
     return response.success(res, data);
   } catch (err) {
     return response.badRequest(res, err.message);
@@ -104,6 +125,7 @@ exports.changeCompanyName = async (req, res) => {
   try {
     const user = req.user;
     const { company_name } = req.body;
+
     const data = await UserDetailsService.changeCompanyName(user, company_name);
     return response.success(res, data);
   } catch (err) {
