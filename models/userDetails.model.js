@@ -24,6 +24,10 @@ const UserDetails = sequelize.define(
       type: Sequelize.INTEGER,
       allowNull: true,
     },
+    company_name: {
+      type: Sequelize.STRING,
+      allowNull: true,
+    },
   },
   { timestamps: false, underscored: true, tableName: "user_details" }
 );

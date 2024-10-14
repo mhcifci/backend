@@ -188,19 +188,14 @@ class UserService extends BaseService {
     return true;
   }
 
-
-
-
   async changePhoneNumber(id, phone, country_code) {
     const user = await this.getById(id);
     if (!user) {
       throw new Error("User not found.");
     }
 
-
     phone = phone.replace(/\s/g, "");
     country_code = country_code.replace(/\s/g, "");
-
 
     // Önce bakılır var mı bu telefon numarası
     const existingUser = await this.getWithCondition({
@@ -223,13 +218,11 @@ class UserService extends BaseService {
     return true;
   }
 
-
   async changeEmailAdress(id, email) {
     const user = await this.getById(id);
-    if(!user) {
+    if (!user) {
       throw new Error("User not found.");
     }
-
 
     // Önce bakılır var mı bu email
     const existingUser = await this.getWithCondition({
@@ -251,6 +244,22 @@ class UserService extends BaseService {
     return true;
   }
 
+  async changeCompanyName(user, company_name) {
+    const existingUserDetails = await this.getWithCondition({
+      user_id: parseInt(user.id),
+    });
+
+    if (existingUserDetails) {
+      return await this.update(existingUserDetails.id, {
+        company_name: company_name,
+      });
+    } else {
+      return await this.create({
+        user_id: parseInt(user.id),
+        company_name: company_name,
+      });
+    }
+  }
 }
 
 module.exports = UserService;

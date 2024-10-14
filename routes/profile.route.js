@@ -35,14 +35,7 @@ const updatePasswordRules = [
     .withMessage("Password must be between 6 and 12 characters."),
 ];
 
-
-const updateEmailRules = [
-  body("email")
-    .isEmail()
-    .notEmpty()
-    .withMessage("Email must be valid."),
-];
-
+const updateEmailRules = [body("email").isEmail().notEmpty().withMessage("Email must be valid.")];
 
 router.post("/profile-picture", authMiddleware, MulterUpload.single("file"), profile.changeProfilePicture);
 router.get("/detail", authMiddleware, profile.getProfileInformation);
@@ -55,5 +48,6 @@ router.get("/user-types", profile.getAllUserTypes);
 router.post("/update-phone", authMiddleware, profile.updatePhone);
 router.post("/update-email", authMiddleware, updateEmailRules, validate, profile.updateEmail);
 
+router.post("/set-company-name", authMiddleware, profile.changeCompanyName);
 
 module.exports = router;

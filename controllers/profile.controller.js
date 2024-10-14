@@ -88,11 +88,10 @@ exports.getAllUserTypes = async (req, res) => {
   }
 };
 
-
 exports.updatePhone = async (req, res) => {
   try {
     const user = req.user;
-    
+
     const { phone, country_code } = req.body;
     const data = await UserService.changePhoneNumber(user.id, phone, country_code);
     return response.success(res, data, "Phone number updated.");
@@ -101,14 +100,24 @@ exports.updatePhone = async (req, res) => {
   }
 };
 
-
-
 exports.updateEmail = async (req, res) => {
   try {
     const user = req.user;
     const { email } = req.body;
     const data = await UserService.changeEmailAdress(user.id, email);
     return response.success(res, data, "Email adress updated.");
+  } catch (err) {
+    return response.badRequest(res, err.message);
+  }
+};
+
+exports.changeCompanyName = async (req, res) => {
+  try {
+    const user = req.user;
+    const { company_name } = req.body;
+
+    const data = await UserDetailsService.changeCompanyName(user, company_name);
+    return response.success(res, data);
   } catch (err) {
     return response.badRequest(res, err.message);
   }
