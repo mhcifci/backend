@@ -16,7 +16,17 @@ class UserService extends BaseService {
   constructor() {
     super(User);
   }
-  async searchUsers(page = 1, limit = 10, name, surname, email, phone, is_active, startDate, endDate) {
+  async searchUsers(
+    page = 1,
+    limit = 10,
+    name,
+    surname,
+    email,
+    phone,
+    is_active,
+    startDate,
+    endDate
+  ) {
     const offset = (parseInt(page) - 1) * parseInt(limit);
 
     let where = {};
@@ -140,9 +150,21 @@ class UserService extends BaseService {
       throw new Error("Kullanıcı bulunamadı.");
     }
     const userProfilePicture = await UserDetailsService.getProfilePicture(user);
-    const getUserPreferences = await UserDetailsService.getUserPreferences(parseInt(user.id));
+    const getUserPreferences = await UserDetailsService.getUserPreferences(
+      parseInt(user.id)
+    );
     const getUserType = await UserDetailsService.getUserType(parseInt(user.id));
-    return { user, userProfilePicture, userType: getUserType.user_type, preffereds: getUserPreferences };
+
+    // get user company name
+    const userCompany = await UserDetailsService.getCompanyName(user);
+
+    return {
+      user,
+      userProfilePicture,
+      userType: getUserType.user_type,
+      preffereds: getUserPreferences,
+      company_name: userCompany.company_name || "",
+    };
   }
 
   async changePassword(id, old_password, new_password) {
