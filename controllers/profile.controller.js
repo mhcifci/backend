@@ -122,3 +122,13 @@ exports.changeCompanyName = async (req, res) => {
     return response.badRequest(res, err.message);
   }
 };
+
+exports.getCompanyName = async (req, res) => {
+  try {
+    const user = req.user;
+    const data = await UserDetailsService.getCompanyName(user);
+    return response.success(res, data);
+  } catch (err) {
+    return response.badRequest(res, err.message);
+  }
+};

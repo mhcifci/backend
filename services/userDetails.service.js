@@ -149,6 +149,18 @@ class UserDetailsService extends BaseService {
       });
     }
   }
+
+  async getCompanyName(user) {
+    const existingUserDetails = await this.getWithCondition({
+      user_id: parseInt(user.id),
+    });
+
+    if (existingUserDetails) {
+      return existingUserDetails.company_name;
+    } else {
+      return null;
+    }
+  }
 }
 
 module.exports = UserDetailsService;

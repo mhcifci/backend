@@ -49,5 +49,6 @@ router.post("/update-phone", authMiddleware, profile.updatePhone);
 router.post("/update-email", authMiddleware, updateEmailRules, validate, profile.updateEmail);
 
 router.post("/set-company-name", authMiddleware, profile.changeCompanyName);
+router.get("/company-name", authMiddleware, profile.getCompanyName);
 
 module.exports = router;
