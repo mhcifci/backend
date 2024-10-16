@@ -163,7 +163,7 @@ class UserService extends BaseService {
       userProfilePicture,
       userType: getUserType.user_type,
       preffereds: getUserPreferences,
-      company_name: userCompany.company_name || "",
+      company_name: userCompany ? userCompany : "",
     };
   }
 

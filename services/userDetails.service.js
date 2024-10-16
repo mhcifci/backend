@@ -66,7 +66,9 @@ class UserDetailsService extends BaseService {
     });
 
     // check type is valid
-    const checkUserTypes = await UserTypesService.getById(parseInt(type_of_user));
+    const checkUserTypes = await UserTypesService.getById(
+      parseInt(type_of_user)
+    );
     if (!checkUserTypes) throw new Error("Invalid user type.");
 
     return await this.update(existingUserDetails.id, {
@@ -80,7 +82,9 @@ class UserDetailsService extends BaseService {
     });
 
     // Önce post code'un geçerliliği kontrol edilecek.
-    const postCode = await PostCodesService.validatePostcode(preffered_post_code);
+    const postCode = await PostCodesService.validatePostcode(
+      preffered_post_code
+    );
     // Eğer geçerli değilse hata döndürülecek.
     if (!postCode) throw new Error("Invalid post code.");
     // Eğer max mile 0'dan küçükse hata döndürülecek.
@@ -127,7 +131,9 @@ class UserDetailsService extends BaseService {
         return null;
       }
 
-      return await UserUploadedFilesService.getFileUrl(existingUserDetails.img_id);
+      return await UserUploadedFilesService.getFileUrl(
+        existingUserDetails.img_id
+      );
     } else {
       return null;
     }
