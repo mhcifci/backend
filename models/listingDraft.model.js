@@ -44,9 +44,8 @@ const ListingDraft = sequelize.define(
       defaultValue: false,
     },
     is_deleted: {
-      type: Sequelize.BOOLEAN,
-      allowNull: false,
-      defaultValue: false,
+      type: Sequelize.DATE,
+      allowNull: true,
     },
   },
   { timestamps: true, underscored: true, tableName: "listings_draft" }

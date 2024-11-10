@@ -38,7 +38,11 @@ exports.getFollowingListings = async (req, res) => {
   try {
     const user = req.user;
     const { limit = 10, page = 1 } = req.query;
-    const result = await listingService.getFollowedListings(user.id, page, limit);
+    const result = await listingService.getFollowedListings(
+      user.id,
+      page,
+      limit
+    );
     return response.success(res, result);
   } catch (err) {
     return response.badRequest(res, err.message);
@@ -49,7 +53,11 @@ exports.getNotInterestedListings = async (req, res) => {
   try {
     const user = req.user;
     const { limit = 10, page = 1 } = req.query;
-    const result = await listingService.getNotInterestedListings(user.id, page, limit);
+    const result = await listingService.getNotInterestedListings(
+      user.id,
+      page,
+      limit
+    );
     return response.success(res, result);
   } catch (err) {
     return response.badRequest(res, err.message);
@@ -86,6 +94,7 @@ exports.create = async (req, res) => {
 
 exports.createforNotMember = async (req, res) => {
   try {
+    console.log(res);
     const result = await listingDraftService.createListing({
       country: req.body.country,
       email: req.body.email,
@@ -99,6 +108,7 @@ exports.createforNotMember = async (req, res) => {
     });
     return response.success(res, result, "Listing created successfully.");
   } catch (err) {
+    console.log(err);
     return response.badRequest(res, err.message);
   }
 };
@@ -122,7 +132,10 @@ exports.requestNew = async (req, res) => {
 exports.getListingCategories = async (req, res) => {
   try {
     const { limit = 10, page = 1 } = req.query;
-    const result = await listingCategoryService.getAllWithPagination(page, limit);
+    const result = await listingCategoryService.getAllWithPagination(
+      page,
+      limit
+    );
     return response.success(res, result);
   } catch (err) {
     return response.badRequest(res, err.message);
@@ -146,7 +159,12 @@ exports.getListingsByCategory = async (req, res) => {
     const { limit = 10, page = 1 } = req.query;
     const user = req.user;
 
-    const result = await listingService.getListingsbyCategory(parseInt(page), parseInt(limit), parseInt(id), parseInt(user.id));
+    const result = await listingService.getListingsbyCategory(
+      parseInt(page),
+      parseInt(limit),
+      parseInt(id),
+      parseInt(user.id)
+    );
     return response.success(res, result);
   } catch (err) {
     return response.badRequest(res, err.message);
@@ -167,7 +185,10 @@ exports.showInformation = async (req, res) => {
 exports.getListingCategory = async (req, res) => {
   try {
     const { limit = 10, page = 1 } = req.query;
-    const result = await listingCategoryService.getAllWithPagination(page, limit);
+    const result = await listingCategoryService.getAllWithPagination(
+      page,
+      limit
+    );
     return response.success(res, result);
   } catch (err) {
     return response.badRequest(res, err.message);
@@ -179,7 +200,11 @@ exports.getListingsbyPreffered = async (req, res) => {
   try {
     const user = req.user;
     const { limit = 10, page = 1 } = req.query;
-    const data = await listingService.getListingsByPreferences(user.id, page, limit);
+    const data = await listingService.getListingsByPreferences(
+      user.id,
+      page,
+      limit
+    );
     return response.success(res, data);
   } catch (err) {
     return response.badRequest(res, err.message);
@@ -190,7 +215,13 @@ exports.getListingByPostcodeAndRadius = async (req, res) => {
   try {
     const user = req.user;
     const { postcode, mile = 10, limit = 10, page = 1 } = req.query;
-    const data = await listingService.getListingByPostcodeAndRadius(user.id, postcode, mile, page, limit);
+    const data = await listingService.getListingByPostcodeAndRadius(
+      user.id,
+      postcode,
+      mile,
+      page,
+      limit
+    );
     return response.success(res, data);
   } catch (err) {
     return response.badRequest(res, err.message);
@@ -201,7 +232,12 @@ exports.searchListings = async (req, res) => {
   try {
     const user = req.user;
     const { keyword, limit = 10, page = 1 } = req.query;
-    const data = await listingService.searchListing(user.id, keyword, page, limit);
+    const data = await listingService.searchListing(
+      user.id,
+      keyword,
+      page,
+      limit
+    );
     return response.success(res, data);
   } catch (err) {
     return response.badRequest(res, err.message);
@@ -210,9 +246,24 @@ exports.searchListings = async (req, res) => {
 exports.searchListingsNew = async (req, res) => {
   try {
     const user = req.user;
-    const { keyword, category, postcode, mile, limit = 10, page = 1 } = req.query;
+    const {
+      keyword,
+      category,
+      postcode,
+      mile,
+      limit = 10,
+      page = 1,
+    } = req.query;
 
-    const data = await listingService.searchListingNew(user.id, keyword, category, postcode, mile, page, limit);
+    const data = await listingService.searchListingNew(
+      user.id,
+      keyword,
+      category,
+      postcode,
+      mile,
+      page,
+      limit
+    );
     return response.success(res, data);
   } catch (err) {
     return response.badRequest(res, err.message);
@@ -224,7 +275,13 @@ exports.searchListingsbyCategory = async (req, res) => {
     const user = req.user;
     const { keyword, limit = 10, page = 1 } = req.query;
     const { category_id } = req.params;
-    const data = await listingService.searchListingbyCategory(user.id, category_id, keyword, page, limit);
+    const data = await listingService.searchListingbyCategory(
+      user.id,
+      category_id,
+      keyword,
+      page,
+      limit
+    );
     return response.success(res, data);
   } catch (err) {
     return response.badRequest(res, err.message);
@@ -235,7 +292,14 @@ exports.searchListingByPostcodeAndRadius = async (req, res) => {
   try {
     const user = req.user;
     const { keyword, postcode, mile = 10, limit = 10, page = 1 } = req.query;
-    const data = await listingService.searchListingByPostcodeAndRadius(user.id, postcode, mile, keyword, page, limit);
+    const data = await listingService.searchListingByPostcodeAndRadius(
+      user.id,
+      postcode,
+      mile,
+      keyword,
+      page,
+      limit
+    );
     return response.success(res, data);
   } catch (err) {
     return response.badRequest(res, err.message);

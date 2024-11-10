@@ -36,9 +36,8 @@ const Design = sequelize.define(
       defaultValue: false,
     },
     is_deleted: {
-      type: Sequelize.TIME,
-      allowNull: false,
-      defaultValue: false,
+      type: Sequelize.DATE,
+      allowNull: true,
     },
     max_apply: {
       type: Sequelize.INTEGER,

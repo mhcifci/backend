@@ -32,9 +32,8 @@ const Jobs = sequelize.define(
       defaultValue: false,
     },
     is_deleted: {
-      type: Sequelize.BOOLEAN,
-      allowNull: false,
-      defaultValue: false,
+      type: Sequelize.DATE,
+      allowNull: true,
     },
     show_fee: {
       type: Sequelize.INTEGER,
