@@ -94,7 +94,6 @@ exports.create = async (req, res) => {
 
 exports.createforNotMember = async (req, res) => {
   try {
-    console.log(res);
     const result = await listingDraftService.createListing({
       country: req.body.country,
       email: req.body.email,
@@ -108,7 +107,6 @@ exports.createforNotMember = async (req, res) => {
     });
     return response.success(res, result, "Listing created successfully.");
   } catch (err) {
-    console.log(err);
     return response.badRequest(res, err.message);
   }
 };
