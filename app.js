@@ -4,8 +4,12 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const response = require("./interceptors/response.interceptor");
 const { changeLostPassword } = require("./controllers/auth.controller");
+const morgan = require("morgan"); // Morgan kütüphanesini ekle
+
 dotenv.config();
 app.use(cors());
+
+app.use(morgan("combined")); // 'combined' log formatını kullan, dilersen başka formatlar da mevcut
 
 app.use("/webhook", require("./routes/webhook.route"));
 
@@ -15,7 +19,7 @@ const APP_PORT = process.env.APP_PORT || 3003;
 const ACCESS_TOKEN = process.env.MOBILE_TOKEN;
 
 const authenticateToken = (req, res, next) => {
-  const token = req.header('X-App-Token');
+  const token = req.header("X-App-Token");
 
   if (!token) {
     return response.badRequest(res, "Token is required", 401);
@@ -25,7 +29,6 @@ const authenticateToken = (req, res, next) => {
   }
   next();
 };
-
 
 // Routes
 app.get("/", (req, res, next) => {
@@ -40,7 +43,6 @@ app.get("/", (req, res, next) => {
     200
   );
 });
-
 
 app.use("/users", authenticateToken, require("./routes/user.route"));
 app.use("/auth", authenticateToken, require("./routes/auth.route"));
