@@ -21,12 +21,12 @@ class DesignDraftService extends BaseService {
   async createListing(data) {
     const { email, phone } = data;
 
-    const checkUser = await userService.getWithCondition({
-      [Op.or]: [{ email: email }, { phone: phone }],
-    });
-    if (checkUser) {
-      throw new Error("User already exists, please login and try again.");
-    }
+    // const checkUser = await userService.getWithCondition({
+    //   [Op.or]: [{ email: email }, { phone: phone }],
+    // });
+    // if (checkUser) {
+    //   throw new Error("User already exists, please login and try again.");
+    // }
 
     const checkListing = await this.getWithCondition({
       [Op.or]: [{ email: email }, { phone: phone }],
@@ -36,12 +36,20 @@ class DesignDraftService extends BaseService {
       throw new Error("Listing already exists, please login and try again.");
     }
 
-    const findLatLang = await postCodesService.getLatLongFromPostcode(data.country);
+    const findLatLang = await postCodesService.getLatLongFromPostcode(
+      data.country
+    );
     if (!findLatLang) {
       throw new Error("Country not found.");
     }
 
-    const listingData = { ...data, user_id: user, country: findLatLang.postcode, latitude: findLatLang.latitude, longitude: findLatLang.longitude };
+    const listingData = {
+      ...data,
+      user_id: user,
+      country: findLatLang.postcode,
+      latitude: findLatLang.latitude,
+      longitude: findLatLang.longitude,
+    };
 
     const created = await this.create(listingData);
 
