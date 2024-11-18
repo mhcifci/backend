@@ -30,6 +30,7 @@ class DesignDraftService extends BaseService {
 
     const checkListing = await this.getWithCondition({
       [Op.or]: [{ email: email }, { phone: phone }],
+      is_deleted: null,
     });
 
     if (checkListing) {
